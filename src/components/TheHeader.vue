@@ -41,6 +41,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   transition: box-shadow ease 200ms;
+  white-space: nowrap;
 }
 
 #header > *:first-child {

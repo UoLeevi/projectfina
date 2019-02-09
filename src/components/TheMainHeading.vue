@@ -1,31 +1,21 @@
 <template>
-  <div 
-    id="main-heading"
-    v-if="selection">
-    <h2>
-      {{ selection.data.name }}
-    </h2>
-    <h4>
-      <span>{{ selection.type }}</span>
-    </h4>
+  <div id="main-heading">
+    <router-view name="heading"/>
   </div>
 </template>
 
 <script>
-
 export default {
   name: "TheMainHeading",
-  components: {
-  },
-  props: {
-    selection: Object
-  }
+  components: {},
+  props: {}
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-#main-heading {
+<style>
+#main-heading > * {
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -42,9 +32,6 @@ export default {
   margin: 0;
   line-height: 16px;
   font-size: 14px;
-}
-
-#main-heading h4 span {
   font-weight: 400;
   color: #bbb;
 }

@@ -3,7 +3,7 @@
     :class="{'is-active': isActive}"
     class="hamburger"
     type="button"
-    @click="$emit('toggle', isActive = !isActive)">
+    @click="$emit('toggle', isActive)">
     <span class="hamburger-box">
       <span class="hamburger-inner"></span>
     </span>
@@ -13,10 +13,8 @@
 <script>
 export default {
   name: "ButtonArrowHamburger",
-  data() {
-    return {
-      isActive: true
-    };
+  props: {
+    isActive: Boolean
   }
 };
 </script>
@@ -57,17 +55,17 @@ button {
   background-color: #3366cc;
 }
 
-.hamburger:not(.is-active) .hamburger-inner,
-.hamburger:not(.is-active) .hamburger-inner::before,
-.hamburger:not(.is-active) .hamburger-inner::after {
+.hamburger.is-active .hamburger-inner,
+.hamburger.is-active .hamburger-inner::before,
+.hamburger.is-active .hamburger-inner::after {
   transition: 
     transform 300ms ease 300ms,
     background-color 300ms ease 300ms;
 }
 
-.hamburger.is-active .hamburger-inner,
-.hamburger.is-active .hamburger-inner::before,
-.hamburger.is-active .hamburger-inner::after {
+.hamburger:not(.is-active) .hamburger-inner,
+.hamburger:not(.is-active) .hamburger-inner::before,
+.hamburger:not(.is-active) .hamburger-inner::after {
   transition: 
     transform 300ms ease 300ms,
     background-color 300ms ease;
@@ -93,23 +91,23 @@ button {
   bottom: -7px;
 }
 
-.hamburger.is-active .hamburger-inner::before {
+.hamburger:not(.is-active) .hamburger-inner::before {
   transform: translate(-6px, 1px) rotate(-45deg) scale(0.73, 1);
   background-color: #bbb;
 }
 
-.hamburger.is-active .hamburger-inner {
+.hamburger:not(.is-active) .hamburger-inner {
   transform: translateX(5px);
   background-color: transparent;
 }
 
-.hamburger.is-active .hamburger-inner::after {
+.hamburger:not(.is-active) .hamburger-inner::after {
   transform: translate(-6px, -1px) rotate(45deg) scale(0.73, 1);
   background-color: #bbb;
 }
 
-.hamburger:hover.is-active .hamburger-inner::before,
-.hamburger:hover.is-active .hamburger-inner::after {
+.hamburger:hover:not(.is-active) .hamburger-inner::before,
+.hamburger:hover:not(.is-active) .hamburger-inner::after {
   background-color: #3366cc;
 }
 </style>

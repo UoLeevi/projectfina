@@ -1,140 +1,63 @@
 <template>
   <div id="app" :class="{'sidebar-collapsed': isSidebarCollapsed}">
     <TheHeader :isScrolled="isScrolled" @login="logIn($event)"/>
-    <TheSidebar
-      :isCollapsed="isSidebarCollapsed"
-      :selectionLists="selectionLists"
-      @select="setSelection($event)"
-    />
+    <aside>
+      <SidebarSectionNav 
+        class="sidebar-section"
+        title="Watchlists"
+        :items="watchlists"
+        :getPath="(watchlist) => `/watchlists/${watchlist.uuid}`"
+        :getInnerHtml="(watchlist) => watchlist.name">
+        </SidebarSectionNav>
+      <SidebarSectionNav 
+        class="sidebar-section"
+        title="Markets"
+        :items="markets"
+        :getPath="(market, mic) => `/markets/${mic}`"
+        :getInnerHtml="(market, mic) => mic">
+        </SidebarSectionNav>
+    </aside>
     <div class="main-header">
-      <ButtonArrowHamburger @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
-      <TheMainHeading :selection="selection"/>
+      <ButtonArrowHamburger :isActive="isSidebarCollapsed" @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
+      <TheMainHeading/>
     </div>
-    <TheMain :selection="selection"/>
+    <main>
+      <router-view/>
+    </main>
   </div>
 </template>
 
 <script>
 import TheHeader from "./components/TheHeader.vue";
-import TheSidebar from "./components/TheSidebar.vue";
-import TheMain from "./components/TheMain.vue";
 import TheMainHeading from "./components/TheMainHeading.vue";
 import ButtonArrowHamburger from "./components/ButtonArrowHamburger.vue";
+import SidebarSectionNav from "./components/SidebarSectionNav.vue";
 
 export default {
   name: "app",
   components: {
     TheHeader,
-    TheSidebar,
-    TheMain,
     TheMainHeading,
-    ButtonArrowHamburger
+    ButtonArrowHamburger,
+    SidebarSectionNav
+  },
+  computed: {
+    markets() {
+      return this.$store.state.marketData.markets;
+    },
+    watchlists() {
+      return this.$store.state.investments.watchlists;
+    }
   },
   data() {
     return {
       isScrolled: window.scrollY !== 0,
-      isSidebarCollapsed: false,
-      selection: null,
-      selectionLists: [
-        {
-          title: "Watchlists",
-          itemType: "Watchlist",
-          items: [
-            {
-              uuid: "7648709a-373d-4578-a414-b59e17a73a32",
-              name: "Innovation",
-              securities: []
-            },
-            {
-              uuid: "ed9ee7b7-6ef1-4fdc-93fb-eff7fd6f3d20",
-              name: "Growth",
-              securities: [
-                {
-                  uuid: "aa86bf2e-9f30-4abd-8c12-68c9084f72db",
-                  company: {
-                    name: "Talenom Oyj"
-                  },
-                  symbol: "TNOM"
-                }
-              ]
-            },
-            {
-              uuid: "bb28a92b-5224-432c-a8af-501418f94f58",
-              name: "Value",
-              securities: [
-                {
-                  uuid: "8cb570b4-f68e-4f29-955f-66b6a1ffb9fb",
-                  company: {
-                    name: "Nokia Oyj"
-                  },
-                  symbol: "NOKIA"
-                },
-                {
-                  uuid: "4c393cbd-6982-45f4-8a06-18091531c927",
-                  company: {
-                    name: "Fortum Oyj"
-                  },
-                  symbol: "FORTUM"
-                },
-                {
-                  uuid: "22c290c3-a342-4149-bc87-87762922a566",
-                  company: {
-                    name: "Nordea Bank Abp"
-                  },
-                  symbol: "NDA FI"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          title: "Dummys",
-          itemType: "Dummy",
-          items: [
-            {
-              uuid: "c079bcb6-bb70-4fe6-8988-f287b5721eda",
-              name: "Dummy 1"
-            },
-            {
-              uuid: "6acc13fe-ca88-4dce-83ea-bae30a51a96a",
-              name: "Dummy 2"
-            }
-          ]
-        }
-      ]
+      isSidebarCollapsed: window.innerWidth < 600
     };
   },
   methods: {
     setIsScrolled() {
       this.isScrolled = window.scrollY !== 0;
-    },
-    setSelection(selection) {
-      this.selection = selection;
-    },
-    logIn(credentials) {
-      var request = new XMLHttpRequest();
-      request.open("POST", "/auth", true);
-
-      request.onload = function() {
-        if (this.status >= 200 && this.status < 400) {
-          // Success!
-          //var data = JSON.parse(this.response);
-          console.log(this.response);
-          this.user = { firstName: "test" };
-        } else {
-          // We reached our target server, but it returned an error
-          console.log(this.response);
-          this.user = { firstName: "test" };
-        }
-      };
-
-      request.onerror = function() {
-        // There was a connection error of some sort
-        console.log("error");
-      };
-
-      request.setRequestHeader("content-type", "application/json");
-      request.send(JSON.stringify(credentials));
     }
   },
   created() {
@@ -146,37 +69,75 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #app {
-  min-height: 110vh;
+  min-height: 100%;
 }
 
 #app > header {
   position: fixed;
   top: 0;
   width: 100vw;
-  height: 52px;
+  height: 60px;
   z-index: 2;
   background-color: #fff;
 }
 
-#app > aside {
+aside {
   position: fixed;
-  top: 53px;
-  min-height: calc(100vh - 53px);
+  top: 61px;
+  height: calc(100vh - 61px);
   z-index: 2;
   background-color: #fff;
+  border-right: 1px solid rgba(0, 0, 0, 0.14);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 256px;
+  transition: width ease 300ms, border-color 100ms ease 100ms;
+}
+
+.sidebar-collapsed aside {
+  width: 0;
+  border-right: 1px solid transparent;
+}
+
+.sidebar-collapsed main,
+.sidebar-collapsed .main-header {
+  left: 0;
+  width: 100%;
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.14);
+}
+
+.sidebar-section {
+  width: 100%;
+  margin-top: 5px;
+  transition: all ease 300ms;
+}
+
+.sidebar-collapsed .sidebar-section {
+  transform: translateX(-256px);
+  opacity: 0;
 }
 
 main {
   position: absolute;
-  min-height: calc(100% - 53px);
+  display: flex;
+  align-items: flex-start;
+  min-height: calc(100% - 61px);
+  box-sizing: border-box;
   background-color: #f8f8f8;
+  padding: 70px 22px 22px;
 }
 
 .main-header {
   position: fixed;
-  height: 54px;
+  height: 70px;
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
@@ -190,15 +151,9 @@ main {
 
 main,
 .main-header {
-  top: 53px;
+  top: 61px;
   left: 256px;
   width: calc(100% - 256px);
   transition: all ease 300ms;
-}
-
-.sidebar-collapsed main,
-.sidebar-collapsed .main-header {
-  left: 0;
-  width: 100%;
 }
 </style>
