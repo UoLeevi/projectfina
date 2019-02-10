@@ -17,10 +17,8 @@
         :getInnerHtml="(market, mic) => mic">
         </SidebarSectionNav>
     </aside>
-    <div class="main-header">
-      <ButtonArrowHamburger :isActive="isSidebarCollapsed" @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
-      <TheMainHeading/>
-    </div>
+    <ButtonArrowHamburger :isActive="isSidebarCollapsed" @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
+      <TheMainHeading class="main-heading"/>
     <main>
       <router-view/>
     </main>
@@ -103,8 +101,12 @@ aside {
   border-right: 1px solid transparent;
 }
 
-.sidebar-collapsed main,
-.sidebar-collapsed .main-header {
+.sidebar-collapsed .main-heading {
+  left: 50px;
+  width: 100%;
+}
+
+.sidebar-collapsed main {
   left: 0;
   width: 100%;
 }
@@ -125,6 +127,18 @@ aside {
   opacity: 0;
 }
 
+.btn-arrow-burger {
+  position: fixed;
+  z-index: 3;
+  top: 61px;
+  left: 186px;
+  transition: all ease 300ms;
+}
+
+.sidebar-collapsed .btn-arrow-burger {
+  left: 0;
+}
+
 main {
   position: absolute;
   display: flex;
@@ -134,8 +148,15 @@ main {
   padding: 70px 22px 22px;
 }
 
-.main-header {
+@media only screen and (min-width: 1200px) {
+  .sidebar-collapsed main {
+    padding: 70px 70px 70px;
+  }
+}
+
+.main-heading {
   position: fixed;
+  padding-left: 22px; 
   height: 70px;
   display: flex;
   justify-content: flex-start;
@@ -150,7 +171,7 @@ main {
 }
 
 main,
-.main-header {
+.main-heading {
   top: 61px;
   left: 256px;
   width: calc(100% - 256px);

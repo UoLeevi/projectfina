@@ -1,14 +1,19 @@
 <template>
   <div>
-    <h2>{{ stock.name }}</h2>
+    <h2>{{ stock && stock.name }}</h2>
     <h4>{{ symbol }}</h4>
   </div>
 </template>
 
 <script>
+import { mapActions } from "vuex";
+
 export default {
   name: "StockHeading",
   components: {},
+  methods: {
+    ...mapActions("marketData", ["fetchStocks"])
+  },
   computed: {
     mic() {
       return this.$route.params.mic;
@@ -20,13 +25,12 @@ export default {
       return this.$route.params.symbol;
     },
     stock() {
-      return this.$store.state.marketData.markets[this.mic].stocks[this.symbol];
+      return this.market.stocks ? this.market.stocks[this.symbol] : null;
     }
   },
-  data() {
-    return {};
-  },
-  methods: {}
+  created() {
+    if (!this.market.stocks) this.fetchStocks({ mic: this.mic });
+  }
 };
 </script>
 

@@ -68,6 +68,17 @@ body {
   font-weight: 700;
 }
 
+a {
+  text-decoration: none;
+  color: #666666;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 [v-cloak] {
   display: none;
 }

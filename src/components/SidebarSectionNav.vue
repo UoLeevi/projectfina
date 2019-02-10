@@ -57,18 +57,17 @@ a {
   box-sizing: border-box;
   display: inline-block;
   padding: 2px 0 0 22px;
-  width: 100%;
+  width: calc(100% - 70px);
   height: 100%;
   font-weight: 400;
   color: #666666;
-  text-decoration: none;
 }
 
 li .router-link-active {
   color: #3366cc;
 }
 
-li:hover {
-  background-color: #f6f6f6;
+a:not(.router-link-active):hover {
+  color: #000;
 }
 </style>

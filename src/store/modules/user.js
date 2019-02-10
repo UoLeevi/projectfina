@@ -1,49 +1,37 @@
 
 const state = {
-  isLoggedIn: false,
-  isRequesting: false
+  jwt: null
 };
 
 const getters = {
-  
+
 };
 
 const actions = {
   logIn({ commit }, { email, password }) {
-    commit('START_REQUEST');
-    var request = new XMLHttpRequest();
-    request.open('POST', 'https://api.projectfina.com/auth', true);
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('POST', 'https://api.projectfina.com/auth', true);
 
-    request.onload = function() {
-      if (this.status >= 200 && this.status < 400) {
-        var data = JSON.parse(this.response);
-        commit('SET_USER', null);
-      } else {
-        // We reached our target server, but it returned an error
-        console.log("login error");
-      }
-      commit('END_REQUEST');
-    };
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          var data = JSON.parse(this.response);
+          commit('SET_JWT', data);
+          resolve();
+        } else
+          reject();
+      };
 
-    request.onerror = function() {
-      console.log("login error");
-      commit('END_REQUEST');
-    };
-
-    request.send(JSON.stringify({ email: email, password: password}));
+      request.send(JSON.stringify({ email: email, password: password }));
+    });
   }
 };
 
 const mutations = {
-  SET_USER(state, user) {
-    state.isLoggedIn = true;
+  SET_JWT(state, { jwt }) {
+    state.jwt = jwt;
   },
-  START_REQUEST(state) {
-    state.isRequesting = true;
-  },
-  END_REQUEST(state) {
-    state.isRequesting = false;
-  }
 };
 
 export default {

@@ -30,7 +30,7 @@ a {
   height: 100%;
   font-weight: 400;
   color: #666666;
-  text-decoration: none;
+  
 }
 
 li {

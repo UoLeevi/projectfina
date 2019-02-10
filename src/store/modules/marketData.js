@@ -1,3 +1,5 @@
+let fetchStocksCache = {};
+let fetchQuotesCache = {};
 
 const state = {
   markets: {
@@ -18,38 +20,48 @@ const getters = {
 
 const actions = {
   fetchStocks({ commit }, { mic }) {
-    var request = new XMLHttpRequest();
-    request.open('GET',
-      `https://api.projectfina.com/v01/stocks/_${mic}.json`, true);
-
-    request.onload = function () {
-      if (this.status >= 200 && this.status < 400) {
-        const stocks = JSON.parse(this.response);
-        commit('ADD_STOCKS', { mic, stocks });
-      } else
-        // eslint-disable-next-line
-        console.log("error while requesting stocks");
-    };
-
-    request.send();
-  },
-  fetchQuotes({ commit }, { mic, symbol, years }) {
-    years.forEach(year => {
+    fetchStocksCache[mic] = fetchStocksCache[mic] || new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.open('GET',
-        `https://api.projectfina.com/v01/eod/${year}/${mic}/${symbol[0]}/_${symbol}.json`, true);
+        `https://api.projectfina.com/v01/stocks/_${mic}.json`, true);
 
+      request.onerror = reject;
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
-          const quotes = JSON.parse(this.response);
-          commit('ADD_QUOTES', { mic, symbol, year, quotes });
+          const stocks = JSON.parse(this.response);
+          commit('ADD_STOCKS', { mic, stocks });
+          resolve();
         } else
-          // eslint-disable-next-line
-          console.log("error while requesting quotes");
+          reject();
       };
 
       request.send();
     });
+
+    return fetchStocksCache[mic];
+  },
+  fetchQuotes({ commit }, { mic, symbol, year }) {
+    fetchQuotesCache[mic] = fetchQuotesCache[mic] || {};
+    fetchQuotesCache[mic][symbol] = fetchQuotesCache[mic][symbol] || {};
+    fetchQuotesCache[mic][symbol][year] = fetchQuotesCache[mic][symbol][year] || new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('GET',
+        `https://api.projectfina.com/v01/eod/${year}/${mic}/${symbol[0]}/_${symbol}.json`, true);
+
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          const quotes = JSON.parse(this.response);
+          commit('ADD_QUOTES', { mic, symbol, year, quotes });
+          resolve();
+        } else
+          reject();
+      };
+
+      request.send();
+    });
+
+    return fetchQuotesCache[mic][symbol][year];
   }
 };
 

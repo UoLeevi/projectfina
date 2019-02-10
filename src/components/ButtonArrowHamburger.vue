@@ -28,7 +28,7 @@ button {
 }
 
 .hamburger {
-  padding: 15px 15px;
+  padding: 23px 23px;
   display: inline-flex;
   align-items: center;
   cursor: pointer;
