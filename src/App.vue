@@ -131,7 +131,6 @@ main {
   align-items: flex-start;
   min-height: calc(100% - 61px);
   box-sizing: border-box;
-  background-color: #f8f8f8;
   padding: 70px 22px 22px;
 }
 
@@ -144,6 +143,7 @@ main {
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 1) 80%,
     rgba(255, 255, 255, 0) 100%
   );
   z-index: 1;

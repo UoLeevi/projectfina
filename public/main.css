@@ -33,6 +33,16 @@
   src: url("assets/fonts/Heebo-Thin.ttf") format("truetype");
   font-weight: 100;
 }
+@font-face {
+  font-family: "Inconsolata";
+  src: url("assets/fonts/Inconsolata-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+@font-face {
+  font-family: "Inconsolata";
+  src: url("assets/fonts/Inconsolata-Regular.ttf") format("truetype");
+  font-weight: 400;
+}
 
 html {
   height: 100%;
@@ -48,6 +58,14 @@ body {
   font-family: 'Heebo', sans-serif;
   font-weight: 300;
   user-select: none;
+}
+
+.font-mono {
+  font-family: 'Inconsolata', sans-serif;
+}
+
+.font-bold {
+  font-weight: 700;
 }
 
 [v-cloak] {

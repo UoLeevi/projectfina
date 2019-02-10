@@ -6,8 +6,7 @@
       <ul>
         <li 
           v-for="(item, index) in items" 
-          :key="getPath(item, index)"
-          :class="{'is-selected': $route.path === getPath(item, index)}">
+          :key="getPath(item, index)">
           <router-link 
             :to="getPath(item, index)">{{ getInnerHtml(item, index) }}</router-link>
         </li>
@@ -65,12 +64,11 @@ a {
   text-decoration: none;
 }
 
-li.is-selected a {
+li .router-link-active {
   color: #3366cc;
 }
 
 li:hover {
-  cursor: pointer;
   background-color: #f6f6f6;
 }
 </style>
