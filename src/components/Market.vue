@@ -1,10 +1,10 @@
 <template>
   <ul>
     <StockListItem
-      v-for="(stock, symbol) in market.stocks"
-      :key="symbol"
+      v-for="stock in stocks"
+      :key="stock.symbol"
       :stock="stock"
-      :symbol="symbol"
+      :symbol="stock.symbol"
     />
   </ul>
 </template>
@@ -26,11 +26,17 @@ export default {
       return this.$route.params.mic;
     },
     market() {
-      return this.$store.state.marketData.markets[this.mic];
+      return this.mic && this.$store.state.marketData.markets[this.mic];
+    },
+    stocks() {
+      return this.market && this.market.stocks && Object
+        .keys(this.market.stocks)
+        .sort()
+        .map(symbol => ({ symbol, ...this.market.stocks[symbol] }));
     }
   },
   created() {
-    if (!this.market.stocks) this.fetchStocks({ mic: this.mic });
+    if (this.market && !this.market.stocks) this.fetchStocks({ mic: this.mic });
   }
 };
 </script>

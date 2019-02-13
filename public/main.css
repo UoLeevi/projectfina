@@ -60,13 +60,31 @@ body {
   user-select: none;
 }
 
-.font-mono {
+.font-mono,
+.font-mono *  {
   font-family: 'Inconsolata', sans-serif;
 }
 
-.font-bold {
+.font-bold,
+.font-bold * {
   font-weight: 700;
 }
+
+.color-pos,
+.color-pos * {
+  color: #2a2;
+}
+
+.color-neg,
+.color-neg * {
+  color: #a22;
+}
+
+.color-neutral,
+.color-neutral * {
+  color: #666666;
+}
+
 
 a {
   text-decoration: none;

@@ -41,12 +41,6 @@ nav {
   padding: 0;
 }
 
-ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 li {
   padding: 0;
   font-size: 14px;

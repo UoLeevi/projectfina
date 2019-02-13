@@ -3,7 +3,12 @@
     <li>
       <div class="font-mono font-bold">{{ symbol }}</div>
       <div>{{ stock.name }}</div>
-      <div></div>
+      <div class="font-mono font-bold" v-html="getPercentageChange(stock.current)"></div>
+      <div class="font-mono">{{ stock.current && stock.current.currency }}</div>
+      <div class="font-mono">
+        {{ stock.current && stock.current.priceLast &&
+        stock.current.priceLast.toLocaleString('en-US', { minimumFractionDigits: 2 })}}
+      </div>
     </li>
   </router-link>
 </template>
@@ -14,6 +19,23 @@ export default {
   computed: {
     mic() {
       return this.$route.params.mic;
+    }
+  },
+  methods: {
+    getPercentageChange(stock) {
+      if (!stock)
+        return null;
+
+      if (stock.quantity > 0)
+      {
+        const change = stock.priceLast / (stock.dateTime > stock.dateTimeClose ? stock.priceClose : stock.priceOpen) - 1;
+        const cssClass = change > 0 ? 'color-pos' : change < 0 ? 'color-neg' : 'color-neutral';
+        const changeString = (change > 0 ? '+' : '') + change.toLocaleString('en-US', { style: 'percent', minimumFractionDigits: 2 });
+        return `<span class="${cssClass}">${changeString}</span>`;
+      }
+      else
+        return '-';
+
     }
   },
   props: {
@@ -30,7 +52,6 @@ a {
   height: 100%;
   font-weight: 400;
   color: #666666;
-  
 }
 
 li {
@@ -53,8 +74,18 @@ li > div:nth-child(1) {
 }
 
 li > div:nth-child(2) {
-  width: 200px;
+  width: 180px;
   font-size: 0.85em;
+}
+
+li > div:nth-child(3) {
+  width: 60px;
+  text-align: right;
+  padding-right: 30px;
+}
+
+li > div:nth-child(4) {
+  width: 40px;
 }
 
 @media only screen and (max-width: 600px) {
