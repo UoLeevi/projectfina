@@ -1,6 +1,10 @@
 
 const state = {
-  jwt: null
+  jwt: null,
+  userUuid: null,
+  firstName: null,
+  lastName: null,
+  email: null
 };
 
 const getters = {
@@ -16,7 +20,7 @@ const actions = {
       request.onerror = reject;
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
-          var data = JSON.parse(this.response);
+          const data = JSON.parse(this.response);
           commit('SET_JWT', data);
           resolve();
         } else
@@ -29,8 +33,13 @@ const actions = {
 };
 
 const mutations = {
-  SET_JWT(state, { jwt }) {
-    state.jwt = jwt;
+  SET_JWT(state, { token }) {
+    state.jwt = token;
+    const claims = JSON.parse(atob(token.split('.')[1]));
+    state.userUuid = claims.sub;
+    state.firstName = claims.given_name;
+    state.lastName = claims.family_name;
+    state.email = claims.email;
   },
 };
 

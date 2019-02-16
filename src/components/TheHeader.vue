@@ -2,10 +2,10 @@
   <header id="header" :class="{ 'is-scrolled': isScrolled }">
     <h2 v-cloak>Project Fina</h2>
     <transition name="fade-replace">
-      <TheUserInfo v-if="user.isLoggedIn" v-cloak/>
+      <TheUserInfo v-if="user.jwt" v-cloak/>
     </transition>
     <transition name="fade-replace">
-      <TheLogin v-if="!user.isLoggedIn" v-cloak/>
+      <TheLogin v-if="!user.jwt" v-cloak/>
     </transition>
   </header>
 </template>

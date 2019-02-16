@@ -1,7 +1,8 @@
 <template>
   <div 
     id="user-info">
-    {{user.firstName}}
+    <div class="user-status"><span class="font-bold">{{user.firstName}}</span> signed in</div>
+    <div class="user-domain">{{user.email.slice(user.email.indexOf('@'))}}</div>
   </div>
 </template>
 
@@ -33,7 +34,17 @@ export default {
 
 #user-info {
   display: flex;
+  flex-direction: column;
   align-items: center;
+}
+
+.user-status {
+  font-size: 0.9em;
+}
+
+.user-domain {
+  color: #666666;
+  font-size: 0.8em;
 }
 
 </style>
