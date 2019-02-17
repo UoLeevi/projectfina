@@ -24,7 +24,12 @@ const state = {
 };
 
 const getters = {
-
+  getQuotes: (state) => (mic, symbol) => {
+    const quotesByYearForMarket = state.quotes.eod[mic];
+    const quotesByYear = quotesByYearForMarket && quotesByYearForMarket[symbol];
+    return quotesByYear && Object.values(quotesByYear).reduce(
+      (r, quotesForOneYear) => Object.assign(r, quotesForOneYear), {});
+  }
 };
 
 const actions = {

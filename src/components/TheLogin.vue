@@ -18,7 +18,7 @@
       v-model="password"
     />
     <button id="login-submit" type="submit">
-      <div v-if="user.isRequesting" class="three-dot-loader"></div>
+      <div v-if="isRequesting" class="three-dot-loader"></div>
       <span v-else>log in</span>
     </button>
   </form>
@@ -36,7 +36,8 @@ export default {
   data() {
     return {
       email: "",
-      password: ""
+      password: "",
+      isRequesting: false
     };
   },
   computed: {
@@ -61,7 +62,9 @@ export default {
         this.$refs["password"].signalRed();
         return;
       }
+      this.isRequesting = true;
       this.logIn({ email: this.email, password: this.password })
+        .finally(() => this.isRequesting = false)
         .catch(this.indicateIncorrectCredentials);
     },
     indicateIncorrectCredentials() {

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import Chart from "chart.js";
 
 export default {
@@ -55,29 +55,21 @@ export default {
     stock() {
       return this.market.stocks && this.market.stocks[this.symbol];
     },
-    quotesByYear() {
-      let quotesByYearForMarket = this.$store.state.marketData.quotes.eod[
-        this.mic
-      ];
-      return quotesByYearForMarket && quotesByYearForMarket[this.symbol];
-    }
+    ...mapGetters("marketData", ["getQuotes"])
   },
   created() {
     if (!this.market || !this.market.stocks)
       this.fetchStocks({ mic: this.mic })
         .then(() => this.fetchQuotes({ mic: this.mic, symbol: this.symbol }))
         .then(createEodChart.bind(this));
-    else if (!this.quotesByYear)
+    else if (!this.getQuotes(this.mic, this.symbol))
       this.fetchQuotes({ mic: this.mic, symbol: this.symbol }).then(
         createEodChart.bind(this)
       );
     else createEodChart.call(this);
 
     function createEodChart() {
-      let quotes = Object.values(this.quotesByYear).reduce(
-        (r, quotesForOneYear) => Object.assign(r, quotesForOneYear),
-        {}
-      );
+      let quotes = this.getQuotes(this.mic, this.symbol);
       let dates = Object.keys(quotes)
         .sort()
         .slice(-250);

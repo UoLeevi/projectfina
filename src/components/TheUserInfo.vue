@@ -1,14 +1,15 @@
 <template>
   <div id="user-info">
     <div class="user-status">
-      <span class="font-bold">{{ user.firstName }}</span> signed in
+      <span class="font-bold">{{ user.firstName }}</span> signed in<br>
+      <span class="user-domain">{{ user.email.slice(user.email.indexOf('@')) }}</span>
     </div>
-    <div class="user-domain">{{ user.email.slice(user.email.indexOf('@')) }}</div>
+    <button @click.prevent="logOut">log out</button>
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "TheUserInfo",
@@ -17,7 +18,8 @@ export default {
     ...mapState(["user"])
   },
   methods: {
-  }
+    ...mapActions("user", ["logOut"])
+  },
 };
 </script>
 
@@ -25,12 +27,13 @@ export default {
 <style scoped>
 #user-info {
   display: flex;
-  flex-direction: column;
   align-items: center;
 }
 
 .user-status {
   font-size: 0.9em;
+  text-align: center;
+  margin: 0 30px 0 0;
 }
 
 .user-domain {
