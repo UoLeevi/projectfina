@@ -97,6 +97,39 @@ ul {
   list-style: none;
 }
 
+button {
+  height: 32px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  background-color: transparent;
+  outline: none;
+  color: #666666;
+  transition: all ease 200ms;
+  font-size: 13px;
+  font-weight: 400;
+  text-transform: uppercase;
+  padding-left: 18px;
+  padding-right: 18px;
+}
+
+button:hover {
+  background-color: #3366cc;
+  border-color: #3366cc;
+  color: #ffffff;
+  cursor: pointer;
+}
+
 [v-cloak] {
   display: none;
 }
+
+.fade-replace-enter,
+.fade-replace-leave-to {
+  opacity: 0;
+}
+
+.fade-replace-enter-active,
+.fade-replace-leave-active {
+  transition: opacity ease-in 300ms;
+}
+

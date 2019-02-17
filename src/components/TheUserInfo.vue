@@ -1,8 +1,9 @@
 <template>
-  <div 
-    id="user-info">
-    <div class="user-status"><span class="font-bold">{{user.firstName}}</span> signed in</div>
-    <div class="user-domain">{{user.email.slice(user.email.indexOf('@'))}}</div>
+  <div id="user-info">
+    <div class="user-status">
+      <span class="font-bold">{{ user.firstName }}</span> signed in
+    </div>
+    <div class="user-domain">{{ user.email.slice(user.email.indexOf('@')) }}</div>
   </div>
 </template>
 
@@ -10,28 +11,18 @@
 import { mapState } from "vuex";
 
 export default {
-  name: 'TheUserInfo',
-  components: {
-
-  },
+  name: "TheUserInfo",
+  components: {},
   computed: {
-    ...mapState([
-      "user"
-      ])
-  },
-  data() {
-    return {
-
-    };
+    ...mapState(["user"])
   },
   methods: {
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 #user-info {
   display: flex;
   flex-direction: column;
@@ -46,5 +37,4 @@ export default {
   color: #666666;
   font-size: 0.8em;
 }
-
 </style>

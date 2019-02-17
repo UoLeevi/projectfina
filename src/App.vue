@@ -2,23 +2,30 @@
   <div id="app" :class="{'sidebar-collapsed': isSidebarCollapsed}">
     <TheHeader :isScrolled="isScrolled" @login="logIn($event)"/>
     <aside>
-      <SidebarSectionNav 
+      <SidebarSectionNav
         class="sidebar-section"
         title="Markets"
         :items="markets"
         :getPath="(market, mic) => `/markets/${mic}`"
-        :getInnerHtml="(market, mic) => market.name">
-        </SidebarSectionNav>
-      <SidebarSectionNav 
-        class="sidebar-section"
-        title="Watchlists"
-        :items="watchlists"
-        :getPath="(watchlist) => `/watchlists/${watchlist.uuid}`"
-        :getInnerHtml="(watchlist) => watchlist.name">
-        </SidebarSectionNav>
+        :getInnerHtml="(market, mic) => market.name"
+      />
+      <transition name="fade-replace">
+        <SidebarSectionNav
+          v-if="user.jwt"
+          class="sidebar-section"
+          title="Watchlists"
+          :items="watchlists"
+          :getPath="(watchlist) => `/watchlists/${watchlist.uuid}`"
+          :getInnerHtml="(watchlist) => watchlist.name"
+        />
+      </transition>
     </aside>
-    <ButtonArrowHamburger :isActive="isSidebarCollapsed" @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
-      <TheMainHeading class="main-heading"/>
+    <ButtonArrowHamburger
+      :isActive="isSidebarCollapsed"
+      @toggle="isSidebarCollapsed = !$event"
+      class="btn-arrow-burger"
+    />
+    <TheMainHeading class="main-heading"/>
     <main>
       <router-view/>
     </main>
@@ -30,6 +37,7 @@ import TheHeader from "./components/TheHeader.vue";
 import TheMainHeading from "./components/TheMainHeading.vue";
 import ButtonArrowHamburger from "./components/ButtonArrowHamburger.vue";
 import SidebarSectionNav from "./components/SidebarSectionNav.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "app",
@@ -40,6 +48,7 @@ export default {
     SidebarSectionNav
   },
   computed: {
+    ...mapState(["user"]),
     markets() {
       return this.$store.state.marketData.markets;
     },
@@ -151,7 +160,7 @@ main {
 
 .main-heading {
   position: fixed;
-  padding-left: 22px; 
+  padding-left: 22px;
   height: 70px;
   display: flex;
   justify-content: flex-start;

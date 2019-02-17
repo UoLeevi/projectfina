@@ -61,7 +61,13 @@ export default {
         this.$refs["password"].signalRed();
         return;
       }
-      this.logIn({ email: this.email, password: this.password });
+      this.logIn({ email: this.email, password: this.password })
+        .catch(this.indicateIncorrectCredentials);
+    },
+    indicateIncorrectCredentials() {
+      const btn = document.getElementById('login-submit');
+      btn.classList.add('err');
+      window.setTimeout(() => btn.classList.remove('err'), 500);
     }
   }
 };
@@ -74,25 +80,16 @@ export default {
   align-items: center;
 }
 
-button {
-  width: 90px;
-  height: 32px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 16px;
-  background-color: transparent;
-  outline: none;
-  color: #666666;
-  transition: all ease 200ms;
-  font-size: 13px;
-  font-weight: 400;
-  text-transform: uppercase;
-}
-
 button:hover {
   background-color: #3366cc;
   border-color: #3366cc;
   color: #ffffff;
-  cursor: pointer;
+}
+
+button.err {
+  border-color: #a22;
+  background-color: #a22;
+  color: #ffffff;
 }
 
 .email {

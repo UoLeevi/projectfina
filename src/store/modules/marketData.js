@@ -4,6 +4,10 @@ const fetchStocksCache = {};
 const fetchCurrentCache = {};
 const fetchQuotesCache = {};
 
+const ADD_STOCKS = 'ADD_STOCKS';
+const UPDATE_CURRENT = 'UPDATE_CURRENT';
+const ADD_QUOTES = 'ADD_QUOTES';
+
 const state = {
   updated: null,
   markets: {
@@ -34,7 +38,7 @@ const actions = {
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
           const stocks = JSON.parse(this.response);
-          commit('ADD_STOCKS', { mic, stocks });
+          commit(ADD_STOCKS, { mic, stocks });
           resolve();
         } else
           reject();
@@ -54,7 +58,7 @@ const actions = {
           const marketData = JSON.parse(this.response);
           fetchStocksCache[mic].then(
             () => {
-              commit('UPDATE_CURRENT', { mic, marketData });
+              commit(UPDATE_CURRENT, { mic, marketData });
               resolve();
             }, () => reject())
         } else
@@ -79,7 +83,7 @@ const actions = {
         request.onload = function () {
           if (this.status >= 200 && this.status < 400) {
             const quotes = JSON.parse(this.response);
-            commit('ADD_QUOTES', { mic, symbol, year, quotes });
+            commit(ADD_QUOTES, { mic, symbol, year, quotes });
             resolve();
           } else
             reject();
@@ -105,10 +109,10 @@ const actions = {
 };
 
 const mutations = {
-  ADD_STOCKS(state, { mic, stocks }) {
+  [ADD_STOCKS](state, { mic, stocks }) {
     state.markets[mic].stocks = stocks;
   },
-  UPDATE_CURRENT(state, { mic, marketData }) {
+  [UPDATE_CURRENT](state, { mic, marketData }) {
     state.updated = marketData.dateTime;
     const symbols = Object.keys(marketData.stocks);
     symbols.forEach(symbol => {
@@ -117,7 +121,7 @@ const mutations = {
         Vue.set(stock, 'current', marketData.stocks[symbol]);
     });
   },
-  ADD_QUOTES(state, { mic, symbol, year, quotes }) {
+  [ADD_QUOTES](state, { mic, symbol, year, quotes }) {
     if (!state.quotes.eod[mic])
       Vue.set(state.quotes.eod, mic, { [symbol]: { [year]: quotes } });
     else if (!state.quotes.eod[mic][symbol])
