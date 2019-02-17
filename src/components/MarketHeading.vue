@@ -1,32 +1,23 @@
 <template>
   <div>
-    <h2>
-    {{ $route.params.mic }}
-    </h2>
-    <h4>Market</h4>
+    <h2>{{ market.name }}</h2>
+    <h4>{{ mic }}</h4>
   </div>
 </template>
 
 <script>
-
 export default {
-  name: 'MarketHeading',
-  components: {
-
-  },
+  name: "MarketHeading",
   computed: {
-
-  },
-  data() {
-    return {
-
-    };
-  },
-  methods: {
+    mic() {
+      return this.$route.params.mic;
+    },
+    market() {
+      return this.mic && this.$store.state.marketData.markets[this.mic];
+    }
   }
-}
+};
 </script>
 
 <style scoped>
-
 </style>

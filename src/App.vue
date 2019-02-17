@@ -4,17 +4,17 @@
     <aside>
       <SidebarSectionNav 
         class="sidebar-section"
+        title="Markets"
+        :items="markets"
+        :getPath="(market, mic) => `/markets/${mic}`"
+        :getInnerHtml="(market, mic) => market.name">
+        </SidebarSectionNav>
+      <SidebarSectionNav 
+        class="sidebar-section"
         title="Watchlists"
         :items="watchlists"
         :getPath="(watchlist) => `/watchlists/${watchlist.uuid}`"
         :getInnerHtml="(watchlist) => watchlist.name">
-        </SidebarSectionNav>
-      <SidebarSectionNav 
-        class="sidebar-section"
-        title="Markets"
-        :items="markets"
-        :getPath="(market, mic) => `/markets/${mic}`"
-        :getInnerHtml="(market, mic) => mic">
         </SidebarSectionNav>
     </aside>
     <ButtonArrowHamburger :isActive="isSidebarCollapsed" @toggle="isSidebarCollapsed = !$event" class="btn-arrow-burger"/>
@@ -111,14 +111,9 @@ aside {
   width: 100%;
 }
 
-.sidebar-section + .sidebar-section {
-  margin-top: 16px;
-  border-top: 1px solid rgba(0, 0, 0, 0.14);
-}
-
 .sidebar-section {
   width: 100%;
-  margin-top: 5px;
+  margin-top: 8px;
   transition: all ease 300ms;
 }
 

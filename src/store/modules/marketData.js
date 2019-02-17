@@ -8,6 +8,7 @@ const state = {
   updated: null,
   markets: {
     'XHEL': {
+      name: 'Nasdaq Helsinki',
       stocks: null
     }
   },

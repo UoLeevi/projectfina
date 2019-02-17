@@ -1,9 +1,9 @@
 <template>
   <div class="stock-info">
     <div class="stock-price-box">
-      <div class="stock-change font-bold font-mono" v-html="getPercentageChange(stock.current)"></div>
-      <div class="stock-price font-bold font-mono">{{ stock && stock.current.priceLast }}</div>
-      <div class="stock-datetime font-mono">{{ stock && stock.current.dateTime }}</div>
+      <div class="stock-change font-bold font-mono" v-html="stock && getPercentageChange(stock.current)"></div>
+      <div class="stock-price font-bold font-mono">{{ stock && stock.current && stock.current.priceLast.toLocaleString("en-US", { minimumFractionDigits: 2 }) }}</div>
+      <div class="stock-datetime font-mono">{{ stock && stock.current && stock.current.dateTime }}</div>
     </div>
     <div class="chart-container">
       <canvas id="eodChart"></canvas>
@@ -53,7 +53,7 @@ export default {
       return this.$route.params.symbol;
     },
     stock() {
-      return this.market.stocks ? this.market.stocks[this.symbol] : null;
+      return this.market.stocks && this.market.stocks[this.symbol];
     },
     quotesByYear() {
       let quotesByYearForMarket = this.$store.state.marketData.quotes.eod[

@@ -33,7 +33,7 @@ h3 {
   color: #bbb;
   margin: 10px 0 0 15px;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 0.85em;
 }
 
 nav {
@@ -43,14 +43,14 @@ nav {
 
 li {
   padding: 0;
-  font-size: 14px;
+  font-size: 0.9em;
   transition: all ease 120ms;
 }
 
 a {
   box-sizing: border-box;
   display: inline-block;
-  padding: 2px 0 0 22px;
+  padding: 2px 0 1px 22px;
   width: calc(100% - 70px);
   height: 100%;
   font-weight: 400;
