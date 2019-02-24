@@ -12,14 +12,14 @@ export default {
   name: "StockHeading",
   components: {},
   methods: {
-    ...mapActions("marketData", ["fetchStocks"])
+    ...mapActions("markets", ["fetchStocks"])
   },
   computed: {
     mic() {
       return this.$route.params.mic;
     },
     market() {
-      return this.$store.state.marketData.markets[this.mic];
+      return this.$store.state.markets.markets[this.mic];
     },
     symbol() {
       return this.$route.params.symbol;

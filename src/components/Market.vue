@@ -19,14 +19,14 @@ export default {
     StockListItem
   },
   methods: {
-    ...mapActions("marketData", ["fetchStocks"])
+    ...mapActions("markets", ["fetchStocks"])
   },
   computed: {
     mic() {
       return this.$route.params.mic;
     },
     market() {
-      return this.mic && this.$store.state.marketData.markets[this.mic];
+      return this.mic && this.$store.state.markets.markets[this.mic];
     },
     stocks() {
       return this.market && this.market.stocks && Object

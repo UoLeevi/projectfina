@@ -60,10 +60,10 @@ const actions = {
       request.onerror = reject;
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
-          const marketData = JSON.parse(this.response);
+          const markets = JSON.parse(this.response);
           fetchStocksCache[mic].then(
             () => {
-              commit(UPDATE_CURRENT, { mic, marketData });
+              commit(UPDATE_CURRENT, { mic, markets });
               resolve();
             }, () => reject())
         } else
@@ -100,8 +100,8 @@ const actions = {
       return fetchQuotesCache[mic][symbol][year];
     } else {
       let year = new Date().getUTCFullYear();
-      let currentYearQuotesPromise = this.dispatch('marketData/fetchQuotes', { mic, symbol, year });
-      let previousYearQuotesPromise = this.dispatch('marketData/fetchQuotes', { mic, symbol, year: year - 1 });
+      let currentYearQuotesPromise = this.dispatch('markets/fetchQuotes', { mic, symbol, year });
+      let previousYearQuotesPromise = this.dispatch('markets/fetchQuotes', { mic, symbol, year: year - 1 });
       return new Promise((resolve, reject) => {
         currentYearQuotesPromise.then(
           () => previousYearQuotesPromise.finally(() => resolve()), 
@@ -117,13 +117,13 @@ const mutations = {
   [ADD_STOCKS](state, { mic, stocks }) {
     state.markets[mic].stocks = stocks;
   },
-  [UPDATE_CURRENT](state, { mic, marketData }) {
-    state.updated = marketData.dateTime;
-    const symbols = Object.keys(marketData.stocks);
+  [UPDATE_CURRENT](state, { mic, markets }) {
+    state.updated = markets.dateTime;
+    const symbols = Object.keys(markets.stocks);
     symbols.forEach(symbol => {
       var stock = state.markets[mic].stocks[symbol];
       if (stock)
-        Vue.set(stock, 'current', marketData.stocks[symbol]);
+        Vue.set(stock, 'current', markets.stocks[symbol]);
     });
   },
   [ADD_QUOTES](state, { mic, symbol, year, quotes }) {

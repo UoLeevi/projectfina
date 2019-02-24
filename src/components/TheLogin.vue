@@ -96,11 +96,11 @@ button.err {
 }
 
 .email {
-  width: 220px;
+  width: 210px;
 }
 
 .password {
-  width: 160px;
+  width: 120px;
 }
 
 /* animation three-dot-loader */

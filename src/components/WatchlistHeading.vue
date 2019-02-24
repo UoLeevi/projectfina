@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     watchlist() {
-      return this.$store.state.investments.watchlists.find(watchlist => watchlist.uuid == this.$route.params.uuid );
+      return this.$store.state.user.watchlists[this.$route.params.uuid];
     }
   },
   data() {

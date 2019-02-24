@@ -19,7 +19,7 @@ export default {
   name: "Stock",
   components: {},
   methods: {
-    ...mapActions("marketData", ["fetchStocks", "fetchQuotes"]),
+    ...mapActions("markets", ["fetchStocks", "fetchQuotes"]),
     getPercentageChange(stock) {
       if (!stock) return null;
 
@@ -47,7 +47,7 @@ export default {
       return this.$route.params.mic;
     },
     market() {
-      return this.$store.state.marketData.markets[this.mic];
+      return this.$store.state.markets.markets[this.mic];
     },
     symbol() {
       return this.$route.params.symbol;
@@ -55,7 +55,7 @@ export default {
     stock() {
       return this.market.stocks && this.market.stocks[this.symbol];
     },
-    ...mapGetters("marketData", ["getQuotes"])
+    ...mapGetters("markets", ["getQuotes"])
   },
   created() {
     if (!this.market || !this.market.stocks)

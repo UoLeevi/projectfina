@@ -11,11 +11,11 @@
       />
       <transition name="fade-replace">
         <SidebarSectionNav
-          v-if="user.jwt"
+          v-if="user.jwt && Object.keys(watchlists).length > 0"
           class="sidebar-section"
           title="Watchlists"
           :items="watchlists"
-          :getPath="(watchlist) => `/watchlists/${watchlist.uuid}`"
+          :getPath="(watchlist, uuid) => `/watchlists/${uuid}`"
           :getInnerHtml="(watchlist) => watchlist.name"
         />
       </transition>
@@ -50,10 +50,10 @@ export default {
   computed: {
     ...mapState(["user"]),
     markets() {
-      return this.$store.state.marketData.markets;
+      return this.$store.state.markets.markets;
     },
     watchlists() {
-      return this.$store.state.investments.watchlists;
+      return this.$store.state.user.watchlists;
     }
   },
   data() {

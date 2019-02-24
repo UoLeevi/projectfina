@@ -13,7 +13,7 @@ export default {
       return this.$route.params.mic;
     },
     market() {
-      return this.mic && this.$store.state.marketData.markets[this.mic];
+      return this.mic && this.$store.state.markets.markets[this.mic];
     }
   }
 };
