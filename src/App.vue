@@ -19,6 +19,16 @@
           :getInnerHtml="(watchlist) => watchlist.name"
         />
       </transition>
+      <transition name="fade-replace">
+        <SidebarSectionNav
+          v-if="user.jwt && Object.keys(groups).length > 0"
+          class="sidebar-section"
+          title="Groups"
+          :items="groups"
+          :getPath="(group, uuid) => `/groups/${uuid}`"
+          :getInnerHtml="(group) => group.name"
+        />
+      </transition>
     </aside>
     <ButtonArrowHamburger
       :isActive="isSidebarCollapsed"
@@ -54,6 +64,9 @@ export default {
     },
     watchlists() {
       return this.$store.state.user.watchlists;
+    },
+    groups() {
+      return this.$store.state.user.groups;
     }
   },
   data() {

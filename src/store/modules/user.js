@@ -1,6 +1,7 @@
 const SET_JWT = 'SET_JWT';
 const CLEAR_JWT = 'CLEAR_JWT';
 const SET_GROUPS = 'SET_GROUPS';
+const SET_WATCHLISTS = 'SET_WATCHLISTS';
 
 const state = {
   jwt: null,
@@ -22,6 +23,7 @@ const actions = {
     if (jwt) {
       commit(SET_JWT, { token: jwt });
       dispatch('fetchGroups');
+      dispatch('fetchWatchlists');
     }
   },
   logIn({ commit, dispatch }, { email, password }) {
@@ -34,7 +36,9 @@ const actions = {
         if (this.status >= 200 && this.status < 400) {
           const data = JSON.parse(this.response);
           commit(SET_JWT, data);
-          dispatch('fetchGroups').finally(resolve());
+          dispatch('fetchGroups');
+          dispatch('fetchWatchlists');
+          resolve();
         } else
           reject();
       };
@@ -56,6 +60,25 @@ const actions = {
         if (this.status >= 200 && this.status < 400) {
           const data = JSON.parse(this.response);
           commit(SET_GROUPS, data);
+          resolve();
+        } else
+          reject();
+      };
+
+      request.send();
+    });
+  },
+  fetchWatchlists({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('GET', 'https://api.projectfina.com/user/watchlists', true);
+      request.setRequestHeader('authorization', `Bearer ${state.jwt}`);
+
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          const data = JSON.parse(this.response);
+          commit(SET_WATCHLISTS, data);
           resolve();
         } else
           reject();
@@ -88,6 +111,9 @@ const mutations = {
   },
   [SET_GROUPS](state, { groups }) {
     state.groups = groups;
+  },
+  [SET_WATCHLISTS](state, { watchlists }) {
+    state.watchlists = watchlists;
   }
 };
 
