@@ -1,7 +1,10 @@
+import Vue from 'vue';
+
 const SET_JWT = 'SET_JWT';
 const CLEAR_JWT = 'CLEAR_JWT';
 const SET_GROUPS = 'SET_GROUPS';
 const SET_WATCHLISTS = 'SET_WATCHLISTS';
+const ADD_NOTE = 'ADD_NOTE';
 
 const state = {
   jwt: null,
@@ -10,7 +13,8 @@ const state = {
   lastName: null,
   email: null,
   groups: {},
-  watchlists: {}
+  watchlists: {},
+  notes: {}
 };
 
 const getters = {
@@ -86,6 +90,26 @@ const actions = {
 
       request.send();
     });
+  },
+  createNote({ commit, state }, { body }) {
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('POST', 'https://api.projectfina.com/user/notes', true);
+      request.setRequestHeader('authorization', `Bearer ${state.jwt}`);
+      request.setRequestHeader('content-type', 'application/json');
+
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          const data = JSON.parse(this.response);
+          commit(ADD_NOTE, { uuid: data.note_uuid, body });
+          resolve();
+        } else
+          reject();
+      };
+
+      request.send(JSON.stringify({ body }));
+    });
   }
 };
 
@@ -114,6 +138,9 @@ const mutations = {
   },
   [SET_WATCHLISTS](state, { watchlists }) {
     state.watchlists = watchlists;
+  },
+  [ADD_NOTE](state, { uuid, body }) {
+    Vue.set(state.notes, uuid, { uuid, body });
   }
 };
 
