@@ -47,7 +47,7 @@ import TheHeader from "./components/TheHeader.vue";
 import TheMainHeading from "./components/TheMainHeading.vue";
 import ButtonArrowHamburger from "./components/ButtonArrowHamburger.vue";
 import SidebarSectionNav from "./components/SidebarSectionNav.vue";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
   name: "app",
@@ -76,6 +76,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions("markets", ["fetchMarkets"]),
     setIsScrolled() {
       this.isScrolled = window.scrollY !== 0;
     }

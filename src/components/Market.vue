@@ -1,42 +1,41 @@
 <template>
   <ul>
-    <StockListItem
-      v-for="stock in stocks"
-      :key="stock.symbol"
-      :stock="stock"
-      :symbol="stock.symbol"
+    <InstrumentListItem
+      v-for="instrument in instruments"
+      :key="instrument.symbol"
+      :instrument="instrument"
+      :symbol="instrument.symbol"
     />
   </ul>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import StockListItem from "./StockListItem.vue";
+import InstrumentListItem from "./InstrumentListItem.vue";
 
 export default {
   name: "Market",
   components: {
-    StockListItem
+    InstrumentListItem
   },
   methods: {
-    ...mapActions("markets", ["fetchStocks"])
+    ...mapActions("markets", ["fetchInstruments"])
   },
   computed: {
-    mic() {
-      return this.$route.params.mic;
-    },
     market() {
-      return this.mic && this.$store.state.markets.markets[this.mic];
+      return this.$store.state.markets.selection.market;
     },
-    stocks() {
-      return this.market && this.market.stocks && Object
-        .keys(this.market.stocks)
-        .sort()
-        .map(symbol => ({ symbol, ...this.market.stocks[symbol] }));
+    instruments() {
+      return this.market 
+        && this.market.instruments
+        && Object
+          .keys(this.market.instruments)
+          .sort()
+          .map(symbol => ({ symbol, ...this.market.instruments[symbol] }));
     }
   },
   created() {
-    if (this.market && !this.market.stocks) this.fetchStocks({ mic: this.mic });
+
   }
 };
 </script>

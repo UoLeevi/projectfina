@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Market from './components/Market.vue';
 import MarketHeading from './components/MarketHeading.vue';
-import Stock from './components/Stock.vue';
-import StockHeading from './components/StockHeading.vue';
+import Instrument from './components/Instrument.vue';
+import InstrumentHeading from './components/InstrumentHeading.vue';
 import Watchlist from './components/Watchlist.vue';
 import WatchlistHeading from './components/WatchlistHeading.vue';
 
@@ -20,16 +20,16 @@ export default new Router({
       }
     },
     {
-      path: '/markets/:mic/stocks/:symbol',
-      name: 'stock',
+      path: '/markets/:mic/instruments/:symbol',
+      name: 'instrument',
       components: {
-        default: Stock,
-        heading: StockHeading
+        default: Instrument,
+        heading: InstrumentHeading
       }
     },
     {
         path: '/watchlists/:uuid',
-        name: 'watchlists',
+        name: 'watchlist',
         components: {
           default: Watchlist,
           heading: WatchlistHeading

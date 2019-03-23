@@ -10,5 +10,6 @@ new Vue({
   render: h => h(App),
   created() {
     this.$store.dispatch('user/initialize');
+    this.$store.dispatch('markets/initialize');
   }
 }).$mount('#app');

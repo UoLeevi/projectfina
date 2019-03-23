@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ market.name }}</h2>
+    <h2>{{ market && market.name }}</h2>
     <h4>{{ mic }}</h4>
   </div>
 </template>
@@ -10,10 +10,10 @@ export default {
   name: "MarketHeading",
   computed: {
     mic() {
-      return this.$route.params.mic;
+      return this.$store.state.markets.selection.mic;
     },
     market() {
-      return this.mic && this.$store.state.markets.markets[this.mic];
+      return this.$store.state.markets.selection.market;
     }
   }
 };
