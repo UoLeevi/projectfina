@@ -5,6 +5,7 @@ const CLEAR_JWT = 'CLEAR_JWT';
 const SET_GROUPS = 'SET_GROUPS';
 const SET_WATCHLISTS = 'SET_WATCHLISTS';
 const ADD_NOTE = 'ADD_NOTE';
+const ADD_NOTE_TO_INSTRUMENT = 'ADD_NOTE_TO_INSTRUMENT';
 
 const state = {
   jwt: null,
@@ -91,7 +92,7 @@ const actions = {
       request.send();
     });
   },
-  createNote({ commit, state }, { body }) {
+  createNote({ commit, state }, note) {
     return new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.open('POST', 'https://api.projectfina.com/user/notes', true);
@@ -102,13 +103,34 @@ const actions = {
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
           const data = JSON.parse(this.response);
-          commit(ADD_NOTE, { uuid: data.note_uuid, body });
+          note.uuid = data.note_uuid;
+          commit(ADD_NOTE, note);
           resolve();
         } else
           reject();
       };
 
-      request.send(JSON.stringify({ body }));
+      request.send(JSON.stringify(note));
+    });
+  },
+  addNoteToInstrument({ commit, dispatch }, { note_uuid, instrument_uuid }) {
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('PUT',
+        `https://api.projectfina.com/user/notes/${note_uuid}/instruments/${instrument_uuid}/`, true);
+      request.setRequestHeader('authorization', `Bearer ${state.jwt}`);
+
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          const data = JSON.parse(this.response);
+          commit(ADD_NOTE_TO_INSTRUMENT, { note_uuid, instrument_uuid, note_x_instrument_uuid: data.note_x_instrument_uuid });
+          resolve();
+        } else
+          reject(new Error(`Unable to add note for instrument!`));
+      };
+
+      request.send();
     });
   }
 };
@@ -141,6 +163,9 @@ const mutations = {
   },
   [ADD_NOTE](state, { uuid, body }) {
     Vue.set(state.notes, uuid, { uuid, body });
+  },
+  [ADD_NOTE_TO_INSTRUMENT](state, { note_uuid, instrument_uuid, note_x_instrument_uuid }) {
+    // TODO
   }
 };
 

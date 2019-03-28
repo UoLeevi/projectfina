@@ -42,8 +42,8 @@ export default {
       return (
         this.priceLast &&
         this.priceLast.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 3
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 3
         })
       );
     },
@@ -52,10 +52,22 @@ export default {
       const date = new Date(
         this.currentQuotes.dateTimeClose > this.currentQuotes.dateTime
           ? this.currentQuotes.dateTimeClose
-          : this.currentQuotes.dateTime);
+          : this.currentQuotes.dateTime
+      );
       return date.toDateString() == new Date().toDateString()
-        ? `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-        : `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+        ? `${date
+            .getHours()
+            .toString()
+            .padStart(2, "0")}:${date
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`
+        : `${date.getFullYear()}-${(date.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${date
+            .getDate()
+            .toString()
+            .padStart(2, "0")}`;
     }
   },
   props: {

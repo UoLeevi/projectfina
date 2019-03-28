@@ -37,6 +37,7 @@ export default {
   data() {
     return {
       note: {
+        uuid: null,
         body: ""
       }
     };
@@ -44,10 +45,14 @@ export default {
   components: {},
   methods: {
     ...mapActions("markets", ["fetchEodQuotes"]),
-    ...mapActions("user", ["createNote"]),
-    createNoteForInstrument() {
-      this.createNote(this.note);
+    ...mapActions("user", ["createNote", "addNoteToInstrument"]),
+    async createNoteForInstrument() {
+      await this.createNote(this.note);
+      const note_uuid = this.note.uuid;
+      const instrument_uuid = this.instrument.uuid;
+      this.note.uuid = null;
       this.note.body = "";
+      await this.addNoteToInstrument({ note_uuid, instrument_uuid });
     }
   },
   computed: {
