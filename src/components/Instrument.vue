@@ -25,7 +25,14 @@
         <button :disabled="!note.body">Save</button>
       </form>
       <ul class="notes-list">
-        <li v-for="note in notes" :key="note.note_x_instrument_uuid"><span>{{ toDateString(note.created) }}</span><p>{{ note.body }}</p></li>
+        <li v-for="note in notes" :key="note.uuid">
+          <hr>
+          <div>
+            <span>{{ toDateString(note.created) }}</span> |
+            <span class="color-neg btn" @click="deleteNote({note_uuid: note.uuid})">delete</span>
+          </div>
+          <p>{{ note.body }}</p>
+        </li>
       </ul>
     </div>
   </div>
@@ -53,7 +60,8 @@ export default {
     ...mapActions("user", [
       "fetchNotesForInstrument",
       "createNote",
-      "addNoteToInstrument"
+      "addNoteToInstrument",
+      "deleteNote"
     ]),
     async createNoteForInstrument() {
       await this.createNote(this.note);
@@ -105,17 +113,27 @@ export default {
     priceUpdated() {
       return !this.currentQuotes
         ? null
-        : toDateString(this.currentQuotes.dateTimeClose > this.currentQuotes.dateTime
-          ? this.currentQuotes.dateTimeClose
-          : this.currentQuotes.dateTime);
+        : toDateString(
+            this.currentQuotes.dateTimeClose > this.currentQuotes.dateTime
+              ? this.currentQuotes.dateTimeClose
+              : this.currentQuotes.dateTime
+          );
     },
     notes() {
-      const notesForInstrument = this.instrument && this.user.notesByInstrument[this.instrument.uuid];
-      return !notesForInstrument ? null
-        : Object
-          .keys(notesForInstrument)
-          .sort((a, b) => notesForInstrument[a].created > notesForInstrument[b].created ? -1 : 1)
-          .map(note_x_instrument_uuid => notesForInstrument[note_x_instrument_uuid]);
+      const notesForInstrument =
+        this.instrument && this.user.notesByInstrument[this.instrument.uuid];
+      return !notesForInstrument
+        ? null
+        : Object.keys(notesForInstrument)
+            .sort((a, b) =>
+              notesForInstrument[a].created > notesForInstrument[b].created
+                ? -1
+                : 1
+            )
+            .map(
+              note_x_instrument_uuid =>
+                notesForInstrument[note_x_instrument_uuid]
+            );
     }
   },
   async created() {
@@ -277,15 +295,19 @@ textarea {
   margin-top: 20px;
 }
 
+.notes-list li div {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: #666;
+}
+
 .notes-list p {
   font-size: 0.9em;
   margin: 6px 0;
 }
 
-.notes-list span {
-  color: #666;
-  font-weight: 600;
-  font-size: 0.8em;
+.btn:hover {
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 700px) {
