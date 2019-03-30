@@ -4,8 +4,7 @@ const SET_JWT = 'SET_JWT';
 const CLEAR_JWT = 'CLEAR_JWT';
 const SET_GROUPS = 'SET_GROUPS';
 const SET_WATCHLISTS = 'SET_WATCHLISTS';
-const ADD_NOTE = 'ADD_NOTE';
-const ADD_NOTE_TO_INSTRUMENT = 'ADD_NOTE_TO_INSTRUMENT';
+const SET_NOTES_FOR_INSTUMENT = 'SET_NOTES_FOR_INSTRUMENT'
 
 const state = {
   jwt: null,
@@ -15,7 +14,7 @@ const state = {
   email: null,
   groups: {},
   watchlists: {},
-  notes: {}
+  notesByInstrument: {}
 };
 
 const getters = {
@@ -92,7 +91,26 @@ const actions = {
       request.send();
     });
   },
-  createNote({ commit, state }, note) {
+  fetchNotesForInstrument({ commit, state }, { instrument_uuid }) {
+    return new Promise((resolve, reject) => {
+      var request = new XMLHttpRequest();
+      request.open('GET', `https://api.projectfina.com/user/instruments/${instrument_uuid}/notes`, true);
+      request.setRequestHeader('authorization', `Bearer ${state.jwt}`);
+
+      request.onerror = reject;
+      request.onload = function () {
+        if (this.status >= 200 && this.status < 400) {
+          const data = JSON.parse(this.response);
+          commit(SET_NOTES_FOR_INSTUMENT, { instrument_uuid, notes: data.notes });
+          resolve();
+        } else
+          reject();
+      };
+
+      request.send();
+    });
+  },
+  createNote({ state }, note) {
     return new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.open('POST', 'https://api.projectfina.com/user/notes', true);
@@ -104,7 +122,6 @@ const actions = {
         if (this.status >= 200 && this.status < 400) {
           const data = JSON.parse(this.response);
           note.uuid = data.note_uuid;
-          commit(ADD_NOTE, note);
           resolve();
         } else
           reject();
@@ -113,7 +130,7 @@ const actions = {
       request.send(JSON.stringify(note));
     });
   },
-  addNoteToInstrument({ commit, dispatch }, { note_uuid, instrument_uuid }) {
+  addNoteToInstrument(_ , { note_uuid, instrument_uuid }) {
     return new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.open('PUT',
@@ -123,8 +140,6 @@ const actions = {
       request.onerror = reject;
       request.onload = function () {
         if (this.status >= 200 && this.status < 400) {
-          const data = JSON.parse(this.response);
-          commit(ADD_NOTE_TO_INSTRUMENT, { note_uuid, instrument_uuid, note_x_instrument_uuid: data.note_x_instrument_uuid });
           resolve();
         } else
           reject(new Error(`Unable to add note for instrument!`));
@@ -161,11 +176,14 @@ const mutations = {
   [SET_WATCHLISTS](state, { watchlists }) {
     state.watchlists = watchlists;
   },
-  [ADD_NOTE](state, { uuid, body }) {
-    Vue.set(state.notes, uuid, { uuid, body });
-  },
-  [ADD_NOTE_TO_INSTRUMENT](state, { note_uuid, instrument_uuid, note_x_instrument_uuid }) {
-    // TODO
+  [SET_NOTES_FOR_INSTUMENT](state, { instrument_uuid, notes }) {
+    if (state.notesByInstrument[instrument_uuid])
+    {
+      const n_x_i_uuids = Object.keys(notes);
+      n_x_i_uuids.forEach(n_x_i_uuid => Vue.set(state.notesByInstrument[instrument_uuid], n_x_i_uuid, notes[n_x_i_uuid]));
+    }
+    else
+      Vue.set(state.notesByInstrument, instrument_uuid, notes);
   }
 };
 

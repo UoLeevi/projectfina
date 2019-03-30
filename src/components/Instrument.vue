@@ -24,6 +24,9 @@
         ></textarea>
         <button :disabled="!note.body">Save</button>
       </form>
+      <ul class="notes-list">
+        <li v-for="note in notes" :key="note.note_x_instrument_uuid"><span>{{ toDateString(note.created) }}</span><p>{{ note.body }}</p></li>
+      </ul>
     </div>
   </div>
 </template>
@@ -31,6 +34,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
 import Chart from "chart.js";
+import { toDateString } from "@/utilities.js";
 
 export default {
   name: "Instrument",
@@ -44,8 +48,13 @@ export default {
   },
   components: {},
   methods: {
+    toDateString,
     ...mapActions("markets", ["fetchEodQuotes"]),
-    ...mapActions("user", ["createNote", "addNoteToInstrument"]),
+    ...mapActions("user", [
+      "fetchNotesForInstrument",
+      "createNote",
+      "addNoteToInstrument"
+    ]),
     async createNoteForInstrument() {
       await this.createNote(this.note);
       const note_uuid = this.note.uuid;
@@ -53,6 +62,7 @@ export default {
       this.note.uuid = null;
       this.note.body = "";
       await this.addNoteToInstrument({ note_uuid, instrument_uuid });
+      await this.fetchNotesForInstrument({ instrument_uuid });
     }
   },
   computed: {
@@ -93,24 +103,19 @@ export default {
       );
     },
     priceUpdated() {
-      if (!this.currentQuotes) return null;
-      const date = new Date(
-        this.currentQuotes.dateTimeClose > this.currentQuotes.dateTime
+      return !this.currentQuotes
+        ? null
+        : toDateString(this.currentQuotes.dateTimeClose > this.currentQuotes.dateTime
           ? this.currentQuotes.dateTimeClose
-          : this.currentQuotes.dateTime
-      );
-      return `${date.getFullYear()}-${(date.getMonth() + 1)
-        .toString()
-        .padStart(2, "0")}-${date
-        .getDate()
-        .toString()
-        .padStart(2, "0")} ${date
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${date
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
+          : this.currentQuotes.dateTime);
+    },
+    notes() {
+      const notesForInstrument = this.instrument && this.user.notesByInstrument[this.instrument.uuid];
+      return !notesForInstrument ? null
+        : Object
+          .keys(notesForInstrument)
+          .sort((a, b) => notesForInstrument[a].created > notesForInstrument[b].created ? -1 : 1)
+          .map(note_x_instrument_uuid => notesForInstrument[note_x_instrument_uuid]);
     }
   },
   async created() {
@@ -118,6 +123,10 @@ export default {
       mic: this.$route.params.mic,
       symbol: this.$route.params.symbol
     });
+
+    if (this.user.jwt)
+      this.fetchNotesForInstrument({ instrument_uuid: this.instrument.uuid });
+
     let quotes = this.getEodQuotes(this.instrument.market_mic, this.symbol);
     let dates = Object.keys(quotes)
       .sort()
@@ -262,6 +271,21 @@ textarea {
   line-height: 1.3em;
   border: 1px solid rgba(0, 0, 0, 0.14);
   border-radius: 4px;
+}
+
+.notes-list {
+  margin-top: 20px;
+}
+
+.notes-list p {
+  font-size: 0.9em;
+  margin: 6px 0;
+}
+
+.notes-list span {
+  color: #666;
+  font-weight: 600;
+  font-size: 0.8em;
 }
 
 @media only screen and (max-width: 700px) {
