@@ -1,0 +1,19 @@
+html {
+  overflow-y: auto !important;
+}
+
+* {
+  user-select: none;
+}
+
+.font-mono {
+  font-family: 'Inconsolata', monospace;
+}
+
+.v-form input:-webkit-autofill,
+.v-form input:-webkit-autofill:hover,
+.v-form input:-webkit-autofill:focus,
+.v-form input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset;
+  box-shadow: 0 0 0 30px white inset;
+}

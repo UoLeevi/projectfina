@@ -1,31 +1,40 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <Topbar />
+    <Navigation />
+    <v-content>
+      <v-fade-transition>
+        <router-view></router-view>
+      </v-fade-transition>
+    </v-content>
+    <v-snackbar :color="message.color" v-model="message.isVisible" :timeout="message.timeout" right>
+      <span>{{ message.text }}</span>
+      <v-btn flat @click="hideMessage">Close</v-btn>
+    </v-snackbar>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
+<script>
+import { mapState, mapActions } from 'vuex';
+import Topbar from '@/components/Topbar';
+import Navigation from '@/components/Navigation';
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default {
+  name: 'App',
+  components: {
+    Topbar,
+    Navigation
+  },
+  computed: {
+    ...mapState('application', ['message'])
+  },
+  methods: {
+    ...mapActions('application', ['hideMessage'])
+  },
+  data () {
+    return {
+      //
+    }
+  }
+};
+</script>
