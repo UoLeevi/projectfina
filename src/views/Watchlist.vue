@@ -1,42 +1,32 @@
 <template>
-  <InstrumentsTable :title="watchlist.name"
-    :instrument_uuids="Object.keys(watchlist && watchlist.instruments || {})" />
+  <InstrumentsTable :title="watchlist && watchlist.name"
+    :watchlist_uuid="$route.params.watchlist_uuid" />
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import LoadMixin from '@/mixins/LoadMixin';
+import GraphQLMixin from '@/mixins/GraphQLMixin';
 import InstrumentsTable from '@/components/InstrumentsTable';
 
 export default {
-  mixins: [LoadMixin],
+  mixins: [GraphQLMixin],
   components: {
     InstrumentsTable
   },
   computed: {
-    watchlist_uuid() {
-      return this.$route.params.watchlist_uuid;
-    },
-    ...mapState('domain', {
-      watchlist(state) {
-        return (state.watchlists || {})[this.watchlist_uuid] || {};
-      },
-    })
+    watchlist() {
+      return this.loading ? null : this.graph.me.watchlists[0];
+    }
   },
   data() {
     return {
-      dependencies: [
-        {
-          watchlists: null
-        },
-        () => ({
-          watchlists: {
-            [this.watchlist_uuid]: {
-              instruments: null
-            }
+      query: () => ` {
+        me {
+          watchlists(uuid: "${this.$route.params.watchlist_uuid}") {
+            uuid
+            name
           }
-        })
-      ]
+        }
+      }`
     };
   },
 };

@@ -35,14 +35,14 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import LoadMixin from '@/mixins/LoadMixin';
+import GraphQLMixin from '@/mixins/GraphQLMixin';
 
 export default {
-  mixins: [LoadMixin],
+  mixins: [GraphQLMixin],
   components: {},
   computed: {
     ...mapState('application', ['navigation']),
-    ...mapState('domain', ['jwt', 'markets', 'groups', 'watchlists'])
+    ...mapState('domain', ['jwt'])
   },
   methods: {
     ...mapActions('application', ['toggleNavigation'])
@@ -53,37 +53,47 @@ export default {
         {
           title: 'Markets',
           action: 'trending_up',
-          getItems: () => this.markets,
+          getItems: () => this.graph.markets,
           getItemKey: (market) => market.uuid,
           getItemRoute: (market) => `/markets/${market.mic}`,
           getItemTitle: (market) => `${market.mic} - ${market.name}`
         },
         {
-          predicate: () => !!this.jwt,
+          predicate: () => this.graph.me,
           title: 'Watchlists',
           action: 'star',
-          getItems: () => this.watchlists,
+          getItems: () => this.graph.me.watchlists,
           getItemKey: (watchlist) => watchlist.uuid,
           getItemRoute: (watchlist) => `/watchlists/${watchlist.uuid}`,
           getItemTitle: (watchlist) => watchlist.name
         },
         {
-          predicate: () => !!this.jwt,
+          predicate: () => this.graph.me,
           title: 'Groups',
           action: 'group',
-          getItems: () => this.groups,
+          getItems: () => this.graph.me.groups,
           getItemKey: (group) => group.uuid,
           getItemRoute: (group) => `/groups/${group.uuid}`,
           getItemTitle: (group) => group.name
         }
       ],
-      dependencies: [
-        {
-          markets: null,
-          watchlists: null,
-          groups: null
+      query: ` {
+        markets {
+          uuid
+          mic
+          name
         }
-      ]
+        me {
+          watchlists {
+            uuid
+            name
+          }
+          groups {
+            uuid
+            name
+          }
+        }
+      }`
     };
   }
 };

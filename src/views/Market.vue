@@ -1,33 +1,30 @@
 <template>
-  <InstrumentsTable :title="market.name"
-    :instrument_uuids="Object.keys(market && market.instruments || {})" />
+  <InstrumentsTable :title="market && market.name"
+    :market_mic="$route.params.mic" />
 </template>
 
 <script>
-import LoadMixin from '@/mixins/LoadMixin';
+import GraphQLMixin from '@/mixins/GraphQLMixin';
 import InstrumentsTable from '@/components/InstrumentsTable';
 
 export default {
-  mixins: [LoadMixin],
+  mixins: [GraphQLMixin],
   components: {
     InstrumentsTable
   },
   computed: {
-    mic() {
-      return this.$route.params.mic;
-    },
     market() {
-      return this.$store.getters['domain/getMarketByMic'](this.mic) || {};
+      return this.loading ? null : this.graph.markets[0];
     }
   },
   data() {
     return {
-      dependencies: [
-        {
-          instruments: null,
-          markets: null
+      query: `{
+        markets(mic: "${this.$route.params.mic}") {
+          uuid
+          name
         }
-      ]
+      }`
     };
   }
 };

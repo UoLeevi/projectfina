@@ -1,6 +1,5 @@
 import Vue from 'vue';
-import gql from 'graphql-tag';
-import { apolloClient, resetApolloCache } from '@/apollo';
+import { client } from '@/apollo';
 import { request, requestJson } from '@/utilities';
 
 const SET_JWT = 'SET_JWT';
@@ -158,18 +157,6 @@ export default {
                   value: instrument 
                 }));
             });
-
-          apolloClient.query({
-            query: gql`
-              query markets {
-                markets {
-                  uuid
-                  name
-                }
-              }
-            `
-          })
-          .then(res => console.log(res));
         }
         await cache.markets;
 
@@ -285,7 +272,7 @@ export default {
           if (this.status >= 200 && this.status < 400) {
             const data = JSON.parse(this.response);
             commit(SET_JWT, data);
-            await resetApolloCache();
+            await client.resetCache();
             dispatch('load', { groups: null, watchlists: null });
             resolve();
           } else
@@ -297,7 +284,7 @@ export default {
     },
     async signOut({ commit }) {
       commit(CLEAR_JWT);
-      await resetApolloCache();
+      await client.resetCache();
     },
     async addInstrumentToWatchlist({ state, commit }, { instrument_uuid, watchlist_uuid }) {
       await request('PUT', `https://api.projectfina.com/user/v01/watchlists/${watchlist_uuid}/instruments/${instrument_uuid}/`, { bearerToken: state.jwt });

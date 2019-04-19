@@ -1,25 +1,24 @@
-import { createApolloClient, restartWebsockets } from 'vue-cli-plugin-apollo/graphql-client';
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { setContext } from 'apollo-link-context';
+import { createHttpLink } from 'apollo-link-http';
 
-export const { apolloClient, wsClient } = createApolloClient({
-  httpEndpoint: 'https://api.projectfina.com/graphql',
-  wsEndpoint: 'wss://api.projectfina.com/graphql',
-  tokenName: 'jwt',
-  // Enable Automatic Query persisting with Apollo Engine
-  persisting: false,
-  websocketsOnly: false,
-  // Is being rendered on the server?
-  ssr: false
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem('jwt');
+  // return the headers to the context so httpLink can read them
+  return (token
+    ? {
+      headers: {
+        ...headers,
+        authorization: `Bearer ${token}`,
+      }
+    }
+    : {});
 });
-apolloClient.wsClient = wsClient;
 
-export async function resetApolloCache() {
-  if (apolloClient.wsClient) 
-    restartWebsockets(apolloClient.wsClient);
+const httpLink = createHttpLink({ uri: 'https://api.projectfina.com/graphql' });
 
-  try {
-    await apolloClient.resetStore()
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.log('%cError on cache reset (login)', 'color: orange;', e.message)
-  }
-}
+export const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache()
+});

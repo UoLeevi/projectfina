@@ -16,7 +16,7 @@
           <h3 class="title grey--text text--darken-1">Instruments</h3>
         </template>
         <template #expand="props">
-          <InstrumentCard :instrument_uuid="props.item.uuid" />
+          <InstrumentCard v-if="props.item.uuid" :instrument_uuid="props.item.uuid" />
         </template>
       </u-data-table>
     </v-container>
@@ -24,42 +24,42 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-import LoadMixin from '@/mixins/LoadMixin'
+import GraphQLMixin from '@/mixins/GraphQLMixin';
 import UDataTable from '@/components/UDataTable';
 import InstrumentCard from '@/components/InstrumentCard';
 import { timeTodayOrDateString, decimalString, percentString } from '@/utilities';
 
 export default {
-  mixins: [LoadMixin],
+  mixins: [GraphQLMixin],
   components: {
     UDataTable,
     InstrumentCard
   },
   props: {
     title: String,
-    instrument_uuids: {
-      type: [Array, Function],
-      default: () => []
-    }
+    market_mic: String,
+    watchlist_uuid: String
   },
   computed: {
-    ...mapState('domain', [
-      'instruments',
-      'markets'
-    ]),
+    instruments() {
+      return (this.loading ? 
+        [] 
+        : this.market_mic
+          ? this.graph.markets[0].instruments
+          : this.graph.me.watchlists[0].instruments)
+    },
     items() {
       return (this.loading ? 
         [] 
-        : this.instrument_uuids
-          .map(instrument_uuid => this.instruments[instrument_uuid])
+        : this.instruments
           .map(instrument => ({
             uuid: instrument.uuid,
             symbol: instrument.symbol,
             name: instrument.name,
-            priceLast: instrument.quotes && instrument.quotes.current.priceLast,
-            changePercent: instrument.quotes && instrument.quotes.current.changePercent,
-            dateTime: instrument.quotes && instrument.quotes.current.dateTime,
+            priceLast: instrument.eod_quotes[0].price_close,
+            changePercent: 
+              100 * ((instrument.eod_quotes[0].price_close / instrument.eod_quotes[1].price_close) - 1),
+            dateTime: new Date(instrument.eod_quotes[0].date),
             sector: instrument.sector
           })));
     }
@@ -147,7 +147,7 @@ export default {
             text: 'Updated',
             align: 'right',
             sortable: true,
-            value: 'dateTime',
+            value: 'date',
           },
           field: {
             align: 'right',
@@ -175,20 +175,43 @@ export default {
         sortBy: 'symbol',
         totalItems: this.items ? this.items.length : 0
       },
-      dependencies: [
-        {
-          instruments: null,
-          markets: null
-        },
-        () => [...new Set(this.instrument_uuids
-            .map(instrument_uuid => this.instruments[instrument_uuid].market_uuid))]
-          .reduce((dependencies, market_uuid) => {
-            dependencies.markets[market_uuid] = { 
-              quotesUpdated: null 
-            };
-            return dependencies;
-          }, { markets: {} })
-      ]
+      query: () => this.market_mic || this.watchlist_uuid
+        ? this.market_mic 
+          ? `{
+              markets(mic: "${this.market_mic}") {
+                uuid
+                instruments {
+                  uuid
+                  name
+                  symbol
+                  sector
+                  eod_quotes(last: 2) {
+                    uuid
+                    date
+                    price_close
+                  }
+                }
+              }
+            }`
+          : `{
+              me {
+                watchlists(uuid: "${this.watchlist_uuid}") {
+                  uuid
+                  instruments {
+                    uuid
+                    name
+                    symbol
+                    sector
+                    eod_quotes(last: 2) {
+                      uuid
+                      date
+                      price_close
+                    }
+                  }
+                }
+              }
+            }`
+        : null
     };
   }
 };
