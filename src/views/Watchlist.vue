@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     watchlist() {
-      return this.loading ? null : this.graph.me.watchlists[0];
+      return this.loading || this.error ? null : this.graph.me.watchlists[0];
     }
   },
   data() {

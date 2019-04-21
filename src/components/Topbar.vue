@@ -8,11 +8,13 @@
         </router-link>
       </v-toolbar-title>
     <v-spacer />
-    <LoginForm v-if="!jwt" />
-    <v-btn v-else flat @click="signOut">
-      <span>Sign Out</span>
-      <v-icon right>exit_to_app</v-icon>
-    </v-btn>
+    <v-fade-transition mode="out-in">
+      <LoginForm :dialog.sync="loginForm" v-if="!jwt || loginForm" />
+      <v-btn v-else flat @click="signOut">
+        <span>Sign Out</span>
+        <v-icon right>exit_to_app</v-icon>
+      </v-btn>
+    </v-fade-transition>
   </v-toolbar>
 </template>
 
@@ -33,6 +35,7 @@ export default {
   },
   data() {
     return {
+      loginForm: false
     };
   }
 };

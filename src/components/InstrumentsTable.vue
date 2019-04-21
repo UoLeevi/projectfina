@@ -10,7 +10,11 @@
         :loading="loading"
         :expand="true"
         :items="items"
-        :no-data-text="loading ? `Retrieving instrument data...` : 'No instrument data.'"
+        :no-data-text="loading 
+          ? `Retrieving instrument data...` 
+          : this.error
+            ? this.error.message
+            : 'No instrument data.'"
         item-key="uuid">
         <template #title>
           <h3 class="title grey--text text--darken-1">Instruments</h3>
@@ -42,7 +46,7 @@ export default {
   },
   computed: {
     instruments() {
-      return (this.loading ? 
+      return (this.loading || this.error ? 
         [] 
         : this.market_mic
           ? this.graph.markets[0].instruments
@@ -195,6 +199,7 @@ export default {
             }`
           : `{
               me {
+                uuid
                 watchlists(uuid: "${this.watchlist_uuid}") {
                   uuid
                   instruments {

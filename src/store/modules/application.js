@@ -1,6 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-
 const SHOW_MESSAGE = 'SHOW_MESSAGE';
 const HIDE_MESSAGE = 'HIDE_MESSAGE';
 const SHOW_NAVIGATION = 'SHOW_NAVIGATION';

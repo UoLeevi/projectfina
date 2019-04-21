@@ -1,5 +1,5 @@
 <template>
-  <v-dialog max-width="600px" v-model="dialog">
+  <v-dialog max-width="600px" v-model="value">
     <template v-slot:activator="{ on }">
       <v-btn flat v-on="on">
         <span>Sign In</span>
@@ -21,7 +21,7 @@
           v-model="password" 
           spellcheck="false"
           @click:append="isPasswordVisible = !isPasswordVisible"/>
-        <v-btn class="primary mt-4" type="submit" :loading="loading">
+        <v-btn class="primary mt-4" type="submit" :loading="processing">
           <span>Sign In</span>
         </v-btn>
       </v-form>
@@ -31,9 +31,14 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions } from 'vuex';
+import GraphQLMixin from '@/mixins/GraphQLMixin';
 
 export default {
+  mixins: [GraphQLMixin],
+  props: {
+    dialog: Boolean
+  },
   data() {
     return {
       email: '',
@@ -44,25 +49,38 @@ export default {
         minLength: v => v.length >= 6 || 'Min 6 characters',
         emailFormat: v => /^\S+@\S+$/.test(v) || 'Email address does not have correct format'
       },
-      loading: false,
-      dialog: false
+      processing: false,
+      query: `{
+        me {
+          uuid
+          first_name
+        }
+      }`
     }
   },
   computed: {
-    ...mapState('domain', ['user'])
+    ...mapState('domain', ['user']),
+    value: {
+      get() {
+        return this.dialog;
+      },
+      set(value) {
+        this.$emit('update:dialog', value)
+      }
+    }
   },
   methods: {
     async submit() {
       if (this.$refs.form.validate())
       {
-        this.loading = true
+        this.processing = true
         await this.signIn({ email: this.email, password: this.password });
-        this.loading = false;
-        this.dialog = false;
         this.showMessage({
           color: 'success',
-          text: `${this.user.firstName} signed in`
+          text: `${ this.graph.me.first_name } signed in`
         });
+        this.value = false;
+        this.processing = false;
       }
     },
     ...mapActions('application', ['showMessage']),

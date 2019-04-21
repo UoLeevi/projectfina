@@ -84,6 +84,7 @@ export default {
           name
         }
         me {
+          uuid
           watchlists {
             uuid
             name
