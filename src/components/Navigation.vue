@@ -71,7 +71,7 @@ export default {
           predicate: () => this.graph.me,
           title: 'Groups',
           action: 'group',
-          getItems: () => this.graph.me.groups,
+          getItems: () => this.graph.me.memberships.map(membership => membership.group),
           getItemKey: (group) => group.uuid,
           getItemRoute: (group) => `/groups/${group.uuid}`,
           getItemTitle: (group) => group.name
@@ -89,9 +89,11 @@ export default {
             uuid
             name
           }
-          groups {
-            uuid
-            name
+          memberships {
+            group {
+              uuid
+              name
+            }
           }
         }
       }`
