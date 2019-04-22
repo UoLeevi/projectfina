@@ -50,7 +50,7 @@ export default {
         [] 
         : this.market_mic
           ? this.graph.markets[0].instruments
-          : this.graph.me.watchlists[0].instruments)
+          : this.graph.me.watchlistsConnection.edges[0].node.instruments)
     },
     items() {
       return (this.loading ? 
@@ -200,17 +200,22 @@ export default {
           : `{
               me {
                 uuid
-                watchlists(uuid: "${this.watchlist_uuid}") {
-                  uuid
-                  instruments {
-                    uuid
-                    name
-                    symbol
-                    sector
-                    eod_quotes(last: 2) {
+                watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
+                  edges {
+                    node {
                       uuid
-                      date
-                      price_close
+                      name
+                      instruments {
+                        uuid
+                        name
+                        symbol
+                        sector
+                        eod_quotes(last: 2) {
+                          uuid
+                          date
+                          price_close
+                        }
+                      }
                     }
                   }
                 }

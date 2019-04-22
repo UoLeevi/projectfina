@@ -14,16 +14,20 @@ export default {
   },
   computed: {
     watchlist() {
-      return this.loading || this.error ? null : this.graph.me.watchlists[0];
+      return this.loading || this.error ? null : this.graph.me.watchlistsConnection.edges[0].node;
     }
   },
   data() {
     return {
       query: () => ` {
         me {
-          watchlists(uuid: "${this.$route.params.watchlist_uuid}") {
-            uuid
-            name
+          watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
+            edges {
+              node {
+                uuid
+                name
+              }
+            }
           }
         }
       }`

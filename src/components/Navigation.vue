@@ -62,7 +62,7 @@ export default {
           predicate: () => this.graph.me,
           title: 'Watchlists',
           action: 'star',
-          getItems: () => this.graph.me.watchlists,
+          getItems: () => this.graph.me.watchlistsConnection.edges.map(edge => edge.node),
           getItemKey: (watchlist) => watchlist.uuid,
           getItemRoute: (watchlist) => `/watchlists/${watchlist.uuid}`,
           getItemTitle: (watchlist) => watchlist.name
@@ -71,7 +71,7 @@ export default {
           predicate: () => this.graph.me,
           title: 'Groups',
           action: 'group',
-          getItems: () => this.graph.me.memberships.map(membership => membership.group),
+          getItems: () => this.graph.me.groupsConnection.edges.map(edge => edge.node),
           getItemKey: (group) => group.uuid,
           getItemRoute: (group) => `/groups/${group.uuid}`,
           getItemTitle: (group) => group.name
@@ -85,14 +85,20 @@ export default {
         }
         me {
           uuid
-          watchlists {
-            uuid
-            name
+          watchlistsConnection {
+            edges {
+              node {
+                uuid
+                name
+              }
+            }
           }
-          memberships {
-            group {
-              uuid
-              name
+          groupsConnection {
+            edges {
+              node {
+                uuid
+                name
+              }
             }
           }
         }
