@@ -77,7 +77,7 @@ export default {
           getItemTitle: (group) => group.name
         }
       ],
-      query: ` {
+      load: ` {
         markets {
           uuid
           mic

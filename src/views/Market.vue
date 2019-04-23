@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      query: `{
+      load: `{
         markets(mic: "${this.$route.params.mic}") {
           uuid
           name

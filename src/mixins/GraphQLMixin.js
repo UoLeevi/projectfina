@@ -5,18 +5,19 @@ import gql from 'graphql-tag';
 export default {
   data() {
     return {
+      client,
       unsubscribeOnClearStore: null,
-      query: null,
+      load: null,
       loading: true,
       error: null,
       graph: {},
     };
   },
   async created() {
-    this.query = (this.query 
-      ? gql`${ typeof this.query === 'function' 
-        ? this.query() 
-        : this.query }`
+    this.load = (this.load 
+      ? gql`${ typeof this.load === 'function' 
+        ? this.load() 
+        : this.load }`
       : null);
 
     this.unsubscribeOnClearStore = client.onClearStore(executeQuery.bind(this));
@@ -33,8 +34,8 @@ async function executeQuery() {
   this.graph = {};
 
   try {
-    if (this.query) {
-      const res = await client.query({ query: this.query });
+    if (this.load) {
+      const res = await client.query({ query: this.load });
       for (const key in res.data)
         if (res.data.hasOwnProperty(key))
           Vue.set(this.graph, key, res.data[key]);

@@ -49,8 +49,13 @@ export default {
       return (this.loading || this.error ? 
         [] 
         : this.market_mic
-          ? this.graph.markets[0].instruments
-          : this.graph.me.watchlistsConnection.edges[0].node.instruments)
+          ? this.graph.markets
+            .find(market => market.mic === this.market_mic)
+            .instruments
+          : this.graph.me.watchlistsConnection.edges
+            .map(edge => edge.node)
+            .find(watchlist => watchlist.uuid === this.watchlist_uuid)
+            .instruments)
     },
     items() {
       return (this.loading ? 
@@ -179,11 +184,12 @@ export default {
         sortBy: 'symbol',
         totalItems: this.items ? this.items.length : 0
       },
-      query: () => this.market_mic || this.watchlist_uuid
+      load: () => this.market_mic || this.watchlist_uuid
         ? this.market_mic 
           ? `{
               markets(mic: "${this.market_mic}") {
                 uuid
+                mic
                 instruments {
                   uuid
                   name

@@ -6,6 +6,11 @@ import store from './store';
 
 Vue.config.productionTip = false
 
+// if ('serviceWorker' in navigator) {
+//   window.addEventListener('load', 
+//     async () => await navigator.serviceWorker.register('sw.js'));
+// }
+
 new Vue({
   router,
   store,

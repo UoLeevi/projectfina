@@ -50,7 +50,7 @@ export default {
         emailFormat: v => /^\S+@\S+$/.test(v) || 'Email address does not have correct format'
       },
       processing: false,
-      query: `{
+      load: `{
         me {
           uuid
           first_name

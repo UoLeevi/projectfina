@@ -14,12 +14,14 @@ export default {
   },
   computed: {
     watchlist() {
-      return this.loading || this.error ? null : this.graph.me.watchlistsConnection.edges[0].node;
+      return this.loading || this.error ? null : this.graph.me.watchlistsConnection.edges
+        .map(edge => edge.node)
+        .find(watchlist => watchlist.uuid === this.$route.params.watchlist_uuid);
     }
   },
   data() {
     return {
-      query: () => ` {
+      load: () => ` {
         me {
           watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
             edges {
