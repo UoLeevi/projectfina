@@ -51,9 +51,12 @@ export default {
     return {
       sections: [
         {
+          predicate: () => this.graph.markets,
           title: 'Markets',
           action: 'trending_up',
-          getItems: () => this.graph.markets,
+          getItems: () => this.graph.markets
+            .map(market => market)
+            .sort((a, b) => a.name < b.name ? -1 : 0),
           getItemKey: (market) => market.uuid,
           getItemRoute: (market) => `/markets/${market.mic}`,
           getItemTitle: (market) => `${market.mic} - ${market.name}`
@@ -62,7 +65,9 @@ export default {
           predicate: () => this.graph.me,
           title: 'Watchlists',
           action: 'star',
-          getItems: () => this.graph.me.watchlistsConnection.edges.map(edge => edge.node),
+          getItems: () => this.graph.me.watchlistsConnection.edges
+            .map(edge => edge.node)
+            .sort((a, b) => a.name < b.name ? -1 : 0),
           getItemKey: (watchlist) => watchlist.uuid,
           getItemRoute: (watchlist) => `/watchlists/${watchlist.uuid}`,
           getItemTitle: (watchlist) => watchlist.name
@@ -71,7 +76,9 @@ export default {
           predicate: () => this.graph.me,
           title: 'Groups',
           action: 'group',
-          getItems: () => this.graph.me.groupsConnection.edges.map(edge => edge.node),
+          getItems: () => this.graph.me.groupsConnection.edges
+            .map(edge => edge.node)
+            .sort((a, b) => a.name < b.name ? -1 : 0),
           getItemKey: (group) => group.uuid,
           getItemRoute: (group) => `/groups/${group.uuid}`,
           getItemTitle: (group) => group.name
