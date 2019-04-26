@@ -24,35 +24,29 @@ export default {
       ? this.watchQuery 
       : gql(this.watchQuery));
 
-    this.unsubscribeOnClearStore = client.onClearStore(executeQuery.bind(this));
-    await executeQuery.call(this);
-  },
-  destroyed() {
-    this.unsubscribeOnClearStore();
-  }
-};
+    this.watchQuery = client.watchQuery({ query: this.watchQuery });
 
-async function executeQuery() {
-  this.loading = true;
-  this.error = null;
-  this.graph = {};
+    const subscription = this.watchQuery.subscribe(({ data, loading, error }) => {
+      this.error = error;
+      this.loading = loading;
+      for (const key in data)
+        if (data.hasOwnProperty(key))
+          Vue.set(this.graph, key, data[key]);
+    });
 
-  try {
-    if (this.watchQuery) {
-      client
-        .watchQuery({ query: this.watchQuery })
-        .subscribe(res => {
-          this.error = res.error;
-          this.loading = res.loading;
-          for (const key in res.data)
-            if (res.data.hasOwnProperty(key))
-              Vue.set(this.graph, key, res.data[key]);
-        });
+    this.$options.destroyed = [
+      client.onClearStore(this.watchQuery.refetch.bind(this.watchQuery)),
+      subscription.unsubscribe.bind(subscription)
+    ];
+
+    try 
+    {
+      await this.watchQuery.result;
+    }
+    catch (e)
+    {
+      this.error = e;
+      this.loading = false;
     }
   }
-  catch (e)
-  {
-    this.error = e;
-    this.loading = false;
-  }
-}
+};
