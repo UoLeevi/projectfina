@@ -19,7 +19,7 @@ export default {
   },
   data() {
     return {
-      load: `{
+      watchQuery: `{
         markets(mic: "${this.$route.params.mic}") {
           uuid
           name

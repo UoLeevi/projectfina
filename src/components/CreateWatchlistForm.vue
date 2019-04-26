@@ -1,28 +1,21 @@
 <template>
   <v-dialog max-width="600px" v-model="value">
     <template v-slot:activator="{ on }">
-      <v-btn flat v-on="on">
-        <span>Sign In</span>
+      <v-btn color="primary" flat small icon v-on="on">
+        <v-icon>add</v-icon>
       </v-btn>
     </template>
     <v-card>
-      <v-card-title><h2>Sign In</h2></v-card-title>
+      <v-card-title><h2>Create Watchlist</h2></v-card-title>
       <v-card-text>
       <v-form class="px-3 py-2" @submit.prevent="submit" ref="form">
-        <v-text-field label="Email" 
-          :rules="[rules.required, rules.emailFormat]"
-          type="email" 
-          v-model="email" 
+        <v-text-field label="Name" 
+          :rules="[rules.required]"
+          type="text" 
+          v-model="name" 
           spellcheck="false"/>
-        <v-text-field label="Password" 
-          :append-icon="isPasswordVisible ? 'visibility' : 'visibility_off'" 
-          :type="isPasswordVisible ? 'text' : 'password'" 
-          :rules="[rules.required, rules.minLength]"
-          v-model="password" 
-          spellcheck="false"
-          @click:append="isPasswordVisible = !isPasswordVisible"/>
         <v-btn class="primary mt-4" type="submit" :loading="processing">
-          <span>Sign In</span>
+          <span>Create</span>
         </v-btn>
       </v-form>
       </v-card-text>
@@ -31,8 +24,9 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapActions } from 'vuex';
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 
 export default {
   mixins: [GraphQLMixin],
@@ -41,25 +35,28 @@ export default {
   },
   data() {
     return {
-      email: '',
-      password: '',
-      isPasswordVisible: false,
+      name: '',
       rules: {
         required: v => !!v || 'Required',
-        minLength: v => v.length >= 6 || 'Min 6 characters',
-        emailFormat: v => /^\S+@\S+$/.test(v) || 'Email address does not have correct format'
+        //nameExists: v => v. || 'Watchlist name already exists'
       },
       processing: false,
-      watchQuery: `{
+      watchQuery: `query myWatchlistNames {
         me {
           uuid
-          first_name
+          watchlistsConnection {
+            edges {
+              node {
+                uuid
+                name
+              }
+            }
+          }
         }
       }`
     }
   },
   computed: {
-    ...mapState('domain', ['user']),
     value: {
       get() {
         return this.dialog;
@@ -74,17 +71,33 @@ export default {
       if (this.$refs.form.validate())
       {
         this.processing = true
-        await this.signIn({ email: this.email, password: this.password });
+        const res = await this.client.mutate({
+          mutation: gql`mutation($watchlist: WatchlistInput!) {
+            createWatchlist(watchlist: $watchlist) {
+              uuid
+              name
+            }
+          }`,
+          variables: {
+            watchlist: {
+              name: this.name
+            }
+          },
+          refetchQueries: [
+            'myWatchlistNames',
+            'myBasicInfo'
+          ]
+        });
+        console.log(res);
         this.showMessage({
-          color: 'success',
-          text: `${ this.graph.me.first_name } signed in`
+          color: 'info',
+          text: `Watchlist ${ this.name } created`
         });
         this.value = false;
         this.processing = false;
       }
     },
     ...mapActions('application', ['showMessage']),
-    ...mapActions('domain', ['signIn'])
   }
 }
 </script>

@@ -184,7 +184,7 @@ export default {
         sortBy: 'symbol',
         totalItems: this.items ? this.items.length : 0
       },
-      load: () => this.market_mic || this.watchlist_uuid
+      watchQuery: () => this.market_mic || this.watchlist_uuid
         ? this.market_mic 
           ? `{
               markets(mic: "${this.market_mic}") {

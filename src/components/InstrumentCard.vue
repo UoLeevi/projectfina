@@ -92,7 +92,7 @@ export default {
   },
   data() {
     return {
-      load: () => `{
+      watchQuery: () => `{
         instruments(uuid: "${this.instrument_uuid}") {
           uuid
           symbol
