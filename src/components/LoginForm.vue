@@ -1,7 +1,7 @@
 <template>
   <v-dialog max-width="600px" v-model="value">
     <template v-slot:activator="{ on }">
-      <v-btn flat v-on="on">
+      <v-btn flat color="grey darken-1" v-on="on">
         <span>Sign In</span>
       </v-btn>
     </template>
