@@ -4,14 +4,12 @@
       <v-flex xs12 sm6 lg4 class="pb-2">
         <u-field label="Name" :value="instrument.name" />
         <u-field label="Sector" :value="instrument.sector" />
-        <v-divider/>
       </v-flex>
       <v-flex xs12 sm6 lg4 class="pb-2">
         <v-fade-transition>
           <v-layout column v-if="graph.me">
             <span class="px-1 pt-1 font-weight-bold grey--text">Watchlists</span>
             <InstrumentWatchlistList :instrument_uuid="instrument.uuid" />
-            <v-divider/>
           </v-layout>
         </v-fade-transition>
       </v-flex>
@@ -43,7 +41,6 @@
             </v-layout>
           </template>
         </u-sparkline-card>
-        <v-divider/>
       </v-flex>
     </v-layout>
     <v-divider/>
