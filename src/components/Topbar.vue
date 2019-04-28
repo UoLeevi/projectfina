@@ -6,6 +6,8 @@
       <router-link to="/" exact style="text-decoration: none; color: inherit; display:flex; align-items: center;">
         <img src="/assets/favicon-32x32.png" 
           class="mr-3 my-0"
+          width="26"
+          height="26"
           alt="Project Fina logo"/>
         <span class="">Project Fina</span>
       </router-link>

@@ -1,25 +1,19 @@
-<svg version="1.1" baseProfile="full" width="180" height="270" 
+<svg version="1.1" baseProfile="full" width="70" height="80" viewBox="0 0 70 80"
   xmlns="http://www.w3.org/2000/svg">
 
   <defs>
-    <linearGradient id="logo-t-gradient">
-      <stop offset="5%"  stop-color="#03A9F4" />
-      <stop offset="100%" stop-color="#81D4FA" />
-    </linearGradient>
-    <linearGradient id="logo-m-gradient">
-      <stop offset="5%"  stop-color="#0277BD" />
-      <stop offset="100%" stop-color="#039BE5" />
-    </linearGradient>
-    <linearGradient id="logo-b-gradient">
-      <stop offset="5%"  stop-color="#78909C" />
-      <stop offset="100%" stop-color="#B0BEC5" />
+    <linearGradient id="logo-gradient" gradientTransform="rotate(25)">
+      <stop offset="0%"  stop-color="#4e4376" />
+      <stop offset="25%" stop-color="#076585" />
+      <stop offset="50%" stop-color="#007991" />
+      <stop offset="100%" stop-color="#439A86" />
     </linearGradient>
   </defs>
 
-  <path d="M 0 135 v -90 a 45 45 0 0 1 45 -45 h 90 a 45 45 0 0 1 45 45 v 45 h -135 a 45 45 0 0 0 -45 45 Z" 
-    fill="url('#logo-t-gradient')" />
-  <path d="M 0 225 v -90 a 45 45 0 0 1 45 -45 h 135 v 45 a 45 45 0 0 1 -45 45 h -90 a 45 45 0 0 0 -45 45 Z" 
-    fill="url('#logo-m-gradient')" />
-  <path d="M 0 225 a 45 45 0 0 1 45 -45 h 45 v 45 a 45 45 0 0 1 -90 0" 
-    fill="url('#logo-b-gradient')" />
+  <path d="
+    M 0 0 h 70 v 10 c 0 16 -12 40 -30 40 h -10 v 30 h -10 a 20 20 0 0 1 -20 -20 z
+    M 10 10 h 50 a 10 10 0 0 1 -10 10 h -40 z
+    M 10 30 h 40 a 10 10 0 0 1 -10 10 h -30 z
+    M 10 50 h 10 v 20 a 10 10 0 0 1 -10 -10 v -10 z" 
+    fill="url('#logo-gradient')" fill-rule="evenodd" />
 </svg>
