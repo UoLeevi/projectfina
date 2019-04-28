@@ -43,7 +43,7 @@ export default {
       const name = this.watchlist.name;
       const res = await this.client.mutate({
         mutation: gql`mutation {
-          deleteWatchlist(uuid: "${this.$route.params.watchlist_uuid}") {
+          deleteWatchlist(watchlist_uuid: "${this.$route.params.watchlist_uuid}") {
             success
             message
           }

@@ -1,33 +1,20 @@
 <template>
   <v-card flat v-if="instrument">
-    <v-layout row wrap justify-center class="px-3 py-2">
-      <v-flex xs12 sm6 lg4>
+    <v-layout row wrap justify-start class="px-3 py-2">
+      <v-flex xs12 sm6 lg4 class="pb-2">
         <u-field label="Name" :value="instrument.name" />
         <u-field label="Sector" :value="instrument.sector" />
-        <!-- <v-fade-transition>
-          <v-layout column v-if="instrumentWatchlists || otherOwnedWatchlists">
+        <v-divider/>
+      </v-flex>
+      <v-flex xs12 sm6 lg4 class="pb-2">
+        <v-fade-transition>
+          <v-layout column v-if="graph.me">
             <span class="px-1 pt-1 font-weight-bold grey--text">Watchlists</span>
             <InstrumentWatchlistList :instrument_uuid="instrument.uuid" />
-            <v-menu bottom right v-if="otherOwnedWatchlists">
-              <template #activator="{ on }">
-                <v-btn color="primary" flat small icon v-on="on">
-                  <v-icon>add</v-icon>
-                </v-btn>
-              </template>
-
-              <v-list>
-                <v-list-tile
-                  v-for="watchlist in otherOwnedWatchlists"
-                  :key="watchlist.uuid"
-                  @click="addInstrumentToWatchlist({ instrument_uuid: instrument.uuid, watchlist_uuid: watchlist.uuid})">
-                  <v-list-tile-title>{{ watchlist.name }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
+            <v-divider/>
           </v-layout>
-        </v-fade-transition> -->
+        </v-fade-transition>
       </v-flex>
-      <v-spacer />
       <v-flex xs12 sm6 lg4 align-self-center class="py-1">
         <u-sparkline-card
           :loading="loading"
@@ -56,6 +43,7 @@
             </v-layout>
           </template>
         </u-sparkline-card>
+        <v-divider/>
       </v-flex>
     </v-layout>
     <v-divider/>
@@ -93,6 +81,9 @@ export default {
   data() {
     return {
       watchQuery: () => `{
+        me {
+          uuid
+        }
         instruments(uuid: "${this.instrument_uuid}") {
           uuid
           symbol

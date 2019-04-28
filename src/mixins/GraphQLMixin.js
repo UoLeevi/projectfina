@@ -6,7 +6,6 @@ export default {
   data() {
     return {
       client,
-      unsubscribeOnClearStore: null,
       watchQuery: null,
       loading: true,
       error: null,
