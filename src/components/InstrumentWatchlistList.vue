@@ -77,24 +77,21 @@ export default {
           }
         }`,
         refetchQueries: [{
-          query: gql`
-            {
-              me {
-                uuid
-                watchlistsConnection(uuid: "${watchlist_uuid}") {
-                  edges {
-                    node {
+          query: gql` {
+            me {
+              uuid
+              watchlistsConnection(uuid: "${watchlist_uuid}") {
+                edges {
+                  node {
+                    uuid
+                    instruments {
                       uuid
-                      instruments {
-                        uuid
-                      }
                     }
                   }
                 }
               }
             }
-          `,
-          variables: { repoName: 'apollographql/apollo-client' },
+          }`
         }]
       });
       const success = res.data.addToWatchlist.success;

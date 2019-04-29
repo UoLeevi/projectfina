@@ -48,10 +48,20 @@ export default {
             message
           }
         }`,
-        refetchQueries: [
-          'myWatchlistNames',
-          'myBasicInfo'
-        ]
+        refetchQueries: [{
+          query: gql` {
+            me {
+              uuid
+              watchlistsConnection {
+                edges {
+                  node {
+                    uuid
+                  }
+                }
+              }
+            }
+          }`
+        }]
       });
       const success = res.data.deleteWatchlist.success;
       this.showMessage({

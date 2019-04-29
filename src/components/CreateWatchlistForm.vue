@@ -41,7 +41,7 @@ export default {
         //nameExists: v => v. || 'Watchlist name already exists'
       },
       processing: false,
-      watchQuery: `query myWatchlistNames {
+      watchQuery: ` {
         me {
           uuid
           watchlistsConnection {
@@ -83,10 +83,21 @@ export default {
               name: this.name
             }
           },
-          refetchQueries: [
-            'myWatchlistNames',
-            'myBasicInfo'
-          ]
+          refetchQueries: [{
+            query:  gql` {
+              me {
+                uuid
+                watchlistsConnection {
+                  edges {
+                    node {
+                      uuid
+                      name
+                    }
+                  }
+                }
+              }
+            }`
+          }]
         });
         console.log(res);
         this.showMessage({
