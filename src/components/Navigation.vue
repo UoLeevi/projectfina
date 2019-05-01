@@ -12,7 +12,6 @@
               alt="Project Fina logo"/>
               <h3 class="logo-text">
                 <span>project</span>
-                <br>
                 <span :style="{ 'font-weight': '800' }">fina</span>
               </h3>
           </router-link>
