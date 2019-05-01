@@ -17,3 +17,11 @@ html {
   -webkit-box-shadow: 0 0 0 30px white inset;
   box-shadow: 0 0 0 30px white inset;
 }
+
+h3.logo-text {
+  letter-spacing: 2px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 20px;
+  color: #000;
+}

@@ -2,6 +2,22 @@
   <nav>
     <v-navigation-drawer app clipped v-model="navigation.isVisible">
       <v-list>
+        <v-list-tile v-show="$vuetify.breakpoint.mdAndDown" >
+          <v-list-tile-content>
+          <router-link to="/" exact style="text-decoration: none; color: inherit; display:flex; align-items: center;">
+            <img src="/assets/projectfina-logo.svg" 
+              width="30px"
+              height="30px"
+              class="mr-4 my-0"
+              alt="Project Fina logo"/>
+              <h3 class="logo-text">
+                <span>project</span>
+                <br>
+                <span :style="{ 'font-weight': '800' }">fina</span>
+              </h3>
+          </router-link>
+          </v-list-tile-content>
+        </v-list-tile>
         <v-fade-transition group>
           <NavigationSection v-if="graph.markets"
             key="markets"

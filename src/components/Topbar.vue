@@ -1,15 +1,18 @@
 <template>
   <v-toolbar app clipped-left height="54">
     <v-toolbar-side-icon flat @click="toggleNavigation" color="grey darken-1" />
-    <v-spacer />
     <v-toolbar-title class="headline grey--text text--darken-1">
       <router-link to="/" exact style="text-decoration: none; color: inherit; display:flex; align-items: center;">
-        <img src="/assets/favicon-32x32.png" 
+        <img src="/assets/projectfina-logo.svg" 
+          width="30px"
+          height="30px"
           class="mr-3 my-0"
-          width="26"
-          height="26"
           alt="Project Fina logo"/>
-        <span class="">Project Fina</span>
+          <h3 class="logo-text">
+            <span>project</span>
+            <br>
+            <span :style="{ 'font-weight': '800' }">fina</span>
+          </h3>
       </router-link>
     </v-toolbar-title>
     <v-spacer />
