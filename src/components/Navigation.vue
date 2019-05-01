@@ -1,8 +1,8 @@
 <template>
   <nav>
     <v-navigation-drawer app clipped v-model="navigation.isVisible">
-      <v-list>
-        <v-list-tile v-show="$vuetify.breakpoint.mdAndDown" >
+      <v-list class="py-0">
+        <v-list-tile v-show="$vuetify.breakpoint.mdAndDown" :style="{ 'height' : '54px', 'display': 'flex', 'align-items': 'center' }" >
           <v-list-tile-content>
           <router-link to="/" exact style="text-decoration: none; color: inherit; display:flex; align-items: center;">
             <img src="/assets/projectfina-logo.svg" 
