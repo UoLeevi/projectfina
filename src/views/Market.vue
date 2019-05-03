@@ -1,6 +1,8 @@
 <template>
-  <InstrumentsTable :title="market && market.name"
-    :market_mic="$route.params.mic" />
+  <v-container>
+    <InstrumentsTable :title="market && market.name"
+      :market_mic="$route.params.mic" />
+  </v-container>
 </template>
 
 <script>

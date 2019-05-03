@@ -1,30 +1,25 @@
 <template>
-  <div>
-    <slot name="title">
-      <h1 class="mx-4 my-3 grey--text text--darken-2 headline">{{ title }}</h1>
-    </slot>
-    <v-container class="my-4">
-      <u-data-table 
-        :columns.sync="columns"
-        :pagination.sync="pagination"
-        :loading="loading"
-        :expand="true"
-        :items="items"
-        :no-data-text="loading 
-          ? `Retrieving instrument data...` 
-          : this.error
-            ? this.error.message
-            : 'No instrument data.'"
-        item-key="uuid">
-        <template #title>
-          <h3 class="title grey--text text--darken-1">Instruments</h3>
-        </template>
-        <template #expand="props">
-          <InstrumentCard v-if="props.item.uuid" :instrument_uuid="props.item.uuid" />
-        </template>
-      </u-data-table>
-    </v-container>
-  </div>
+  <u-data-table 
+    :columns.sync="columns"
+    :pagination.sync="pagination"
+    :loading="loading"
+    :expand="true"
+    :items="items"
+    :no-data-text="loading 
+      ? `Retrieving instrument data...` 
+      : this.error
+        ? this.error.message
+        : 'No instrument data.'"
+    item-key="uuid">
+    <template #title>
+      <slot name="title">
+        <h3 class="title grey--text text--darken-1">{{ title }}</h3>
+      </slot>
+    </template>
+    <template #expand="props">
+      <InstrumentCard v-if="props.item.uuid" :instrument_uuid="props.item.uuid" />
+    </template>
+  </u-data-table>
 </template>
 
 <script>
@@ -68,7 +63,7 @@ export default {
             priceLast: instrument.eod_quotes[0].price_close,
             changePercent: 
               100 * ((instrument.eod_quotes[0].price_close / instrument.eod_quotes[1].price_close) - 1),
-            dateTime: new Date(instrument.eod_quotes[0].date),
+            date: new Date(instrument.eod_quotes[0].date),
             sector: instrument.sector
           })));
     }

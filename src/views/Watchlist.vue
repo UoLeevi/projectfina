@@ -1,7 +1,9 @@
 <template>
-  <div>
+  <v-container>
     <InstrumentsTable :title="watchlist && watchlist.name"
       :watchlist_uuid="$route.params.watchlist_uuid" />
+    <v-layout>
+    <v-spacer/>
       <v-fade-transition>
         <v-btn v-show="watchlist && canDelete" 
           class="mt-4" 
@@ -10,7 +12,8 @@
           <span>Delete watchlist</span>
         </v-btn>
       </v-fade-transition>
-  </div>
+    </v-layout>
+  </v-container>
 </template>
 
 <script>

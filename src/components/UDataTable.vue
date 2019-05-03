@@ -1,5 +1,5 @@
 <template>
-  <v-card v-resize="responsive && resize">
+  <v-card v-resize="resize">
     <v-card-title primary-title>
       <slot name="title"></slot>
       <v-spacer></v-spacer>
@@ -24,8 +24,7 @@
       :pagination.sync="pagination || defaults.pagination"
       :no-data-text="noDataText"
       :item-key="itemKey"
-      class="elevation-1"
-    >
+      hide-actions>
       <template #headers="props">
         <tr>
           <component
@@ -47,7 +46,7 @@
                 ? header.component.props() 
                 : header.component.props
               : null)">
-            {{ header.text }} <v-btn v-if="!header.fixed" flat fab small dark @click="removeColumn(index)"><v-icon>close</v-icon></v-btn>
+            {{ header.text }} <v-btn v-if="!header.fixed" flat fab small dark @click="hideColumn(index)"><v-icon>close</v-icon></v-btn>
           </component>
         </tr>
       </template>
@@ -130,14 +129,12 @@ export default {
   },
   methods: {
     showColumn(index) {
-      const [column] = this.otherColumns.splice(index, 1);
-      this.columns.splice(this.columns.length, 0, column);
-      this.responsiveColumns = false;
+      this.columns.filter(column => !column.show)[index].show = true;
+      this.responsive = false;
     },
     hideColumn(index) {
-      const [column] = this.columns.splice(index, 1);
-      this.otherColumns.splice(this.otherColumns.length, 0, column);
-      this.responsiveColumns = false;
+      this.columns.filter(column => column.show)[index].show = false;
+      this.responsive = false;
     },
     changeSort(value) {
       const pagination = this.pagination || this.defaults.pagination;
@@ -149,9 +146,10 @@ export default {
       }
     },
     resize() {
-      this.columns
-        .filter(column => 'media' in column)
-        .forEach(column => column.show = this.$vuetify.breakpoint[column.media] === true);
+      if (this.responsive)
+        this.columns
+          .filter(column => 'media' in column)
+          .forEach(column => column.show = this.$vuetify.breakpoint[column.media] === true);
     }
   },
   data() {
@@ -170,7 +168,7 @@ export default {
               items: this.columns
                 .filter(column => !column.show)
                 .map(column => column.header.text),
-              selectCb: this.addColumn
+              selectCb: this.showColumn
             })
           }
         },
