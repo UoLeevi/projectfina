@@ -2,7 +2,7 @@
   <v-toolbar app clipped-left height="54">
     <v-toolbar-side-icon flat @click="toggleNavigation" color="grey darken-1" />
     <v-toolbar-title class="headline grey--text text--darken-1">
-      <router-link to="/" exact style="text-decoration: none; color: inherit; display:flex; align-items: center;">
+      <router-link to="/" exact style="display:flex; align-items: center;">
         <img src="/assets/projectfina-logo.svg" 
           width="30px"
           height="30px"

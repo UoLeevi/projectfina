@@ -16,7 +16,8 @@ export default {
   },
   computed: {
     market() {
-      return this.loading ? null : this.graph.markets[0];
+      return this.loading ? null : this.graph.markets
+        .find(market => market.mic === this.$route.params.mic);
     }
   },
   data() {
@@ -24,6 +25,7 @@ export default {
       watchQuery: `{
         markets(mic: "${this.$route.params.mic}") {
           uuid
+          mic
           name
         }
       }`

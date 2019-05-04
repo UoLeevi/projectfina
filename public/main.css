@@ -25,3 +25,8 @@ h3.logo-text {
   line-height: 30px;
   color: #000;
 }
+
+#app a {
+  text-decoration: none;
+  color: inherit;
+}

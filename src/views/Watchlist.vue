@@ -79,7 +79,7 @@ export default {
   data() {
     return {
       processing: false,
-      watchQuery: () => ` {
+      watchQuery: () => `{
         me {
           uuid
           watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
@@ -94,6 +94,6 @@ export default {
         }
       }`
     };
-  },
+  }
 };
 </script>

@@ -3,7 +3,7 @@
     <Topbar />
     <Navigation />
     <v-content>
-      <v-fade-transition>
+      <v-fade-transition mode="out-in">
         <router-view></router-view>
       </v-fade-transition>
     </v-content>
