@@ -152,27 +152,32 @@ export default {
   data() {
     return {
       prosessing: false,
-      watchQuery: `query {
-        instruments(uuid: "${this.instrument_uuid}") {
-          uuid
-          name
-        }
-        me {
-          uuid
-          watchlistsConnection {
-            edges {
-              permission_mask
-              node {
-                uuid
-                name
-                instruments {
+      watchQuery: {
+        query: gql`query($instrument_uuid: ID) {
+          instruments(uuid: $instrument_uuid) {
+            uuid
+            name
+          }
+          me {
+            uuid
+            watchlistsConnection {
+              edges {
+                permission_mask
+                node {
                   uuid
+                  name
+                  instruments {
+                    uuid
+                  }
                 }
               }
             }
           }
+        }`,
+        variables: {
+          instrument_uuid: this.instrument_uuid
         }
-      }`
+      }
     };
   }
 };

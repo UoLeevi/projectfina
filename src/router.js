@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
 import Market from './views/Market'
-import Instrument from './views/Instrument'
+import MarketInstrument from './views/MarketInstrument'
 import Watchlist from './views/Watchlist'
+import WatchlistInstrument from './views/WatchlistInstrument'
 
 Vue.use(Router)
 
@@ -21,13 +22,18 @@ export default new Router({
     },
     {
       path: '/markets/:mic/instruments/:symbol',
-      name: 'instrument',
-      component: Instrument
+      name: 'market/instrument',
+      component: MarketInstrument
     },
     {
       path: '/watchlists/:watchlist_uuid',
       name: 'watchlist',
       component: Watchlist
+    },
+    {
+      path: '/watchlists/:watchlist_uuid/instruments/:instrument_uuid',
+      name: 'watchlist/instrument',
+      component: WatchlistInstrument
     },
   ]
 })

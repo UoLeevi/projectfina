@@ -13,12 +13,14 @@
           :rules="[rules.required, rules.emailFormat]"
           type="email" 
           v-model="email" 
+          validate-on-blur
           spellcheck="false"/>
         <v-text-field label="Password" 
           :append-icon="isPasswordVisible ? 'visibility' : 'visibility_off'" 
           :type="isPasswordVisible ? 'text' : 'password'" 
           :rules="[rules.required, rules.minLength]"
           v-model="password" 
+          validate-on-blur
           spellcheck="false"
           @click:append="isPasswordVisible = !isPasswordVisible"/>
         <v-btn class="primary mt-4" type="submit" :loading="processing">
@@ -33,6 +35,7 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 
 export default {
   mixins: [GraphQLMixin],
@@ -50,12 +53,14 @@ export default {
         emailFormat: v => /^\S+@\S+$/.test(v) || 'Email address does not have correct format'
       },
       processing: false,
-      watchQuery: `{
-        me {
-          uuid
-          first_name
-        }
-      }`
+      watchQuery: {
+        query: gql`{
+          me {
+            uuid
+            first_name
+          }
+        }`
+      }
     }
   },
   computed: {

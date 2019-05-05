@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { client } from '@/apollo';
-import gql from 'graphql-tag';
 
 export default {
   data() {
@@ -19,11 +18,10 @@ export default {
         : this.watchQuery 
       : null);
 
-    this.watchQuery = (typeof this.watchQuery === 'object'
-      ? this.watchQuery 
-      : gql(this.watchQuery));
+    if (!this.watchQuery)
+      return;
 
-    this.watchQuery = client.watchQuery({ query: this.watchQuery });
+    this.watchQuery = client.watchQuery(this.watchQuery);
 
     const subscription = this.watchQuery.subscribe(({ data, loading, error }) => {
       this.error = error;

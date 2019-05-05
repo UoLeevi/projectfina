@@ -11,6 +11,7 @@
       <v-form class="px-3 py-2" @submit.prevent="submit" ref="form">
         <v-text-field label="Name" 
           :rules="[rules.required]"
+          validate-on-blur
           type="text" 
           v-model="name" 
           spellcheck="false"/>
@@ -41,19 +42,21 @@ export default {
         //nameExists: v => v. || 'Watchlist name already exists'
       },
       processing: false,
-      watchQuery: ` {
-        me {
-          uuid
-          watchlistsConnection {
-            edges {
-              node {
-                uuid
-                name
+      watchQuery: {
+        query: gql` {
+          me {
+            uuid
+            watchlistsConnection {
+              edges {
+                node {
+                  uuid
+                  name
+                }
               }
             }
           }
-        }
-      }`
+        }`
+      }
     }
   },
   computed: {
@@ -99,11 +102,12 @@ export default {
             }`
           }]
         });
-        console.log(res);
+
         this.showMessage({
           color: 'info',
           text: `Watchlist ${ this.name } created`
         });
+
         this.value = false;
         this.processing = false;
       }

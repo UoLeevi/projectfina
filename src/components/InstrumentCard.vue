@@ -52,7 +52,6 @@
         </v-flex>
       </v-layout>
     </v-fade-transition>
-    <v-divider/>
   </v-card>
 </template>
 
@@ -61,6 +60,7 @@ import InstrumentWatchlistList from '@/components/InstrumentWatchlistList';
 import USparklineCard from '@/components/USparklineCard';
 import UField from '@/components/UField';
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 import { Uo, dateString, decimalString, percentString } from '@/utilities';
 
 export default {
@@ -86,24 +86,29 @@ export default {
   },
   data() {
     return {
-      watchQuery: () => `{
-        me {
-          uuid
-        }
-        instruments(uuid: "${this.instrument_uuid}") {
-          uuid
-          symbol
-          name
-          sector
-          eod_quotes(last: 250) {
+      watchQuery: { 
+        query: gql`query($instrument_uuid: ID!) {
+          me {
             uuid
-            date
-            price_low
-            price_high
-            price_close
           }
+          instruments(uuid: $instrument_uuid) {
+            uuid
+            symbol
+            name
+            sector
+            eod_quotes(last: 250) {
+              uuid
+              date
+              price_low
+              price_high
+              price_close
+            }
+          }
+        }`,
+        variables: {
+          instrument_uuid: this.instrument_uuid
         }
-      }`
+      }
     };
   }
 };

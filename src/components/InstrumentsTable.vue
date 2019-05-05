@@ -18,12 +18,14 @@
     </template>
     <template #expand="props">
       <InstrumentCard v-if="props.item.uuid" :instrument_uuid="props.item.uuid" />
+      <v-divider />
     </template>
   </u-data-table>
 </template>
 
 <script>
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 import UDataTable from '@/components/UDataTable';
 import InstrumentCard from '@/components/InstrumentCard';
 import { timeTodayOrDateString, decimalString, percentString } from '@/utilities';
@@ -95,7 +97,17 @@ export default {
           },
           field: {
             align: 'left',
-            class: 'font-mono font-weight-bold '
+            class: 'font-mono font-weight-bold ',
+            component: {
+              name: 'UDataTableFieldRouterLink',
+              props: instrument => ({
+                to: this.loading 
+                  ? null 
+                  : this.market_mic 
+                    ? `/markets/${this.market_mic}/instruments/${instrument.symbol}`
+                    : `/watchlists/${this.watchlist_uuid}/instruments/${instrument.uuid}`
+              })
+            }
           }
         },
         {
@@ -181,8 +193,9 @@ export default {
       },
       watchQuery: () => this.market_mic || this.watchlist_uuid
         ? this.market_mic 
-          ? `{
-              markets(mic: "${this.market_mic}") {
+          ? { 
+            query: gql`query($market_mic: String){
+              markets(mic: $market_mic) {
                 uuid
                 mic
                 instruments {
@@ -197,11 +210,16 @@ export default {
                   }
                 }
               }
-            }`
-          : `{
+            }`,
+            variables: {
+              market_mic: this.market_mic
+            }
+          }
+          : {
+            query: gql`query($watchlist_uuid: ID!) {
               me {
                 uuid
-                watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
+                watchlistsConnection(uuid: $watchlist_uuid) {
                   edges {
                     node {
                       uuid
@@ -221,7 +239,11 @@ export default {
                   }
                 }
               }
-            }`
+            }`,
+            variables: {
+              watchlist_uuid: this.$route.params.watchlist_uuid
+            }
+          }
         : null
     };
   }

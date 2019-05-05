@@ -61,7 +61,7 @@
             @click.native="props.expanded = !props.expanded"
             v-bind="(column.field.component 
               ? typeof column.field.component.props === 'function' 
-                ? column.field.component.props() 
+                ? column.field.component.props(props.item) 
                 : column.field.component.props
               : null)">
             {{ column.field.format ? column.field.format(props.item[column.header.value]) : props.item[column.header.value] }}
@@ -82,12 +82,14 @@
 import UDataTableHeaderDefault from '@/components/UDataTableHeaderDefault';
 import UDataTableHeaderMenu from '@/components/UDataTableHeaderMenu';
 import UDataTableFieldDefault from '@/components/UDataTableFieldDefault';
+import UDataTableFieldRouterLink from '@/components/UDataTableFieldRouterLink';
 
 export default {
   name: 'u-data-table',
   components: {
     UDataTableHeaderDefault,
     UDataTableFieldDefault,
+    UDataTableFieldRouterLink,
     UDataTableHeaderMenu,
     UDataTableFieldFunction: {
       render(createElement) {

@@ -7,6 +7,7 @@
 
 <script>
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 import InstrumentsTable from '@/components/InstrumentsTable';
 
 export default {
@@ -22,13 +23,18 @@ export default {
   },
   data() {
     return {
-      watchQuery: `{
-        markets(mic: "${this.$route.params.mic}") {
-          uuid
-          mic
-          name
+      watchQuery: { 
+        query: gql`query ($mic: String!){
+          markets(mic: $mic) {
+            uuid
+            mic
+            name
+          }
+        }`,
+        variables: {
+          mic: this.$route.params.mic
         }
-      }`
+      }
     };
   }
 };

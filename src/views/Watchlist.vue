@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import router from '@/router';
 import { mapActions } from 'vuex';
 import GraphQLMixin from '@/mixins/GraphQLMixin';
 import gql from 'graphql-tag';
@@ -72,27 +71,32 @@ export default {
         text: success ? `Watchlist ${ name } deleted` : 'Unable to delete watchlist'
       });
       this.processing = false;
-      router.push({ path: '/' });
+      this.$router.push({ path: '/' });
     },
     ...mapActions('application', ['showMessage'])
   },
   data() {
     return {
       processing: false,
-      watchQuery: () => `{
-        me {
-          uuid
-          watchlistsConnection(uuid: "${this.$route.params.watchlist_uuid}") {
-            edges {
-              permission_mask
-              node {
-                uuid
-                name
+      watchQuery: {
+        query: gql`query($watchlist_uuid: ID!) {
+          me {
+            uuid
+            watchlistsConnection(uuid: $watchlist_uuid) {
+              edges {
+                permission_mask
+                node {
+                  uuid
+                  name
+                }
               }
             }
           }
+        }`,
+        variables: {
+          watchlist_uuid: this.$route.params.watchlist_uuid
         }
-      }`
+      }
     };
   }
 };

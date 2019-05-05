@@ -3,6 +3,7 @@
     <Topbar />
     <Navigation />
     <v-content>
+      <v-progress-linear :indeterminate="!isRouteReady" class="ma-0" height="4"></v-progress-linear>
       <v-fade-transition mode="out-in">
         <router-view></router-view>
       </v-fade-transition>
@@ -33,8 +34,16 @@ export default {
   },
   data () {
     return {
-      //
+      isRouteReady: true
     }
+  },
+  created() {
+    this.$router.beforeEach((to, from, next) => {
+      this.isRouteReady = false;
+      next();
+    });
+
+    this.$router.afterEach((to, from) => this.isRouteReady = true)
   }
 };
 </script>

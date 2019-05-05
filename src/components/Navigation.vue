@@ -65,6 +65,7 @@ import { mapState, mapActions } from 'vuex';
 import NavigationSection from '@/components/NavigationSection';
 import CreateWatchlistForm from '@/components/CreateWatchlistForm';
 import GraphQLMixin from '@/mixins/GraphQLMixin';
+import gql from 'graphql-tag';
 
 export default {
   mixins: [GraphQLMixin],
@@ -84,32 +85,34 @@ export default {
       dialogs: {
         createWatchlist: false
       },
-      watchQuery: `query myBasicInfo {
-        markets {
-          uuid
-          mic
-          name
-        }
-        me {
-          uuid
-          watchlistsConnection {
-            edges {
-              node {
-                uuid
-                name
+      watchQuery: {
+        query: gql`query {
+          markets {
+            uuid
+            mic
+            name
+          }
+          me {
+            uuid
+            watchlistsConnection {
+              edges {
+                node {
+                  uuid
+                  name
+                }
+              }
+            }
+            groupsConnection {
+              edges {
+                node {
+                  uuid
+                  name
+                }
               }
             }
           }
-          groupsConnection {
-            edges {
-              node {
-                uuid
-                name
-              }
-            }
-          }
-        }
-      }`
+        }`
+      }
     };
   }
 };

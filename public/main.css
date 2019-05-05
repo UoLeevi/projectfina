@@ -30,3 +30,7 @@ h3.logo-text {
   text-decoration: none;
   color: inherit;
 }
+
+#app ul {
+  list-style: none;
+}
