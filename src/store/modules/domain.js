@@ -6,9 +6,6 @@ import router from '@/router';
 const SET_JWT = 'SET_JWT';
 const CLEAR_JWT = 'CLEAR_JWT';
 
-const ADD_INSTRUMENT_TO_WATCHLIST = 'ADD_INSTRUMENT_TO_WATCHLIST';
-const REMOVE_INSTRUMENT_FROM_WATCHLIST = 'REMOVE_INSTRUMENT_FROM_WATCHLIST';
-
 export default {
   state: {
     jwt: null
@@ -21,12 +18,6 @@ export default {
     [CLEAR_JWT](state) {
       state.jwt = null;
       localStorage.removeItem('jwt');
-    },
-    [ADD_INSTRUMENT_TO_WATCHLIST](state, { instrument_uuid, watchlist_uuid }) {
-      Vue.set(state.watchlists[watchlist_uuid].instruments, instrument_uuid, state.instruments[instrument_uuid]);
-    },
-    [REMOVE_INSTRUMENT_FROM_WATCHLIST](state, { instrument_uuid, watchlist_uuid }) {
-      Vue.delete(state.watchlists[watchlist_uuid].instruments, instrument_uuid);
     }
   },
   actions: {
@@ -58,14 +49,6 @@ export default {
       router.push({ path: '/' });
       commit(CLEAR_JWT);
       await client.clearStore();
-    },
-    async addInstrumentToWatchlist({ state, commit }, { instrument_uuid, watchlist_uuid }) {
-      await request('PUT', `https://api.projectfina.com/user/v01/watchlists/${watchlist_uuid}/instruments/${instrument_uuid}/`, { bearerToken: state.jwt });
-      commit(ADD_INSTRUMENT_TO_WATCHLIST, { instrument_uuid, watchlist_uuid });
-    },
-    async removeInstrumentFromWatchlist({ state, commit }, { instrument_uuid, watchlist_uuid }) {
-      await request('DELETE', `https://api.projectfina.com/user/v01/watchlists/${watchlist_uuid}/instruments/${instrument_uuid}/`, { bearerToken: state.jwt });
-      commit(REMOVE_INSTRUMENT_FROM_WATCHLIST, { instrument_uuid, watchlist_uuid });
     }
   },
   namespaced: true
